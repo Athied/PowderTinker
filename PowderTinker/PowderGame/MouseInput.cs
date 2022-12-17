@@ -30,13 +30,13 @@ namespace PowderGame
         {
             switch (SelectedMaterial)
             {
-                case 0: return new Sand();
-                case 1: return new Water();
-                case 2: return new EmptyMaterial();
-                case 3: return new Stone();
+                case 0: return new Materials.Sand();
+                case 1: return new Materials.Water();
+                case 2: return new Materials.Void();
+                case 3: return new Materials.Stone();
             }
 
-            return new EmptyMaterial();
+            return new Materials.Void();
         }
 
         public static void CheckMouseInput()

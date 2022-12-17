@@ -1,4 +1,5 @@
 ﻿using Raylib_cs;
+using System.Numerics;
 
 namespace PowderGame
 {
@@ -13,5 +14,7 @@ namespace PowderGame
         ColorRange Colors { get; }
 
         float OverallSpeed { get; }
+
+        Vector2 Velocity { get; set; }
     }
 }

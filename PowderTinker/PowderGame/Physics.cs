@@ -1,11 +1,17 @@
 ﻿using Raylib_cs;
 using System;
+using System.Numerics;
 using static PowderGame.Program;
 
 namespace PowderGame
 {
     public static class Physics
     {
+        public static class ExternalForces
+        {
+            public static float Gravity = 9.8f;
+        }
+
         private static List<float> AvgMilliseconds = new List<float>();
 
         public static float AveragePhysicsTimeTaken { get; private set; }

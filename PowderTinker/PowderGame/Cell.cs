@@ -50,7 +50,7 @@ namespace PowderGame
 
         public void SwapMaterial(Cell replacementSource, IMaterial? newMaterial = null)
         {
-            newMaterial ??= new EmptyMaterial();
+            newMaterial ??= new Materials.Void();
 
             Material = replacementSource.Material;
             replacementSource.Material = newMaterial;

@@ -72,7 +72,7 @@ namespace PowderGame
             {
                 for (int j = 0; j < G_GameH / G_CellSize; j++)
                 {
-                    Cell newCell = new Cell(i, j, new EmptyMaterial());
+                    Cell newCell = new Cell(i, j, new Materials.Void());
 
                     G_Cells.Add(newCell);
                     G_CellLookup[i, j] = newCell;
