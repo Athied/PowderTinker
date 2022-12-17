@@ -19,21 +19,21 @@
 
             MaterialTypes[] validTypes = new MaterialTypes[] { MaterialTypes.None };
 
-            int a = CellMovement.TryMoveAlongPath(cell, validTypes, false, new (int, int)[]
+            int a = CellMovement.TryMoveAlongPath(cell, validTypes, false, new Position[]
             {
-                (0, 1),
-                (-1, 1),
-                (1, 1),
+                new (0, 1),
+                new (-1, 1),
+                new (1, 1),
             });
 
             // If any of previous 3 movement checks succeeded, do not move.
             if (a != -1) return;
 
             // If both the left and right spaces are empty, do not move.
-            Cell? l = Helpers.GetCellAtIndex(cell.IndexX - 1, cell.IndexY);
+            Cell? l = Helpers.GetCellAtIndex(cell.Index.X - 1, cell.Index.Y);
             if (l == null) return;
 
-            Cell? r = Helpers.GetCellAtIndex(cell.IndexX + 1, cell.IndexY);
+            Cell? r = Helpers.GetCellAtIndex(cell.Index.X + 1, cell.Index.Y);
             if (r == null) return;
 
             if (l.OccupyingMaterial.MaterialType == MaterialTypes.None && r.OccupyingMaterial.MaterialType == MaterialTypes.None) return;
@@ -41,10 +41,10 @@
             // Otherwise, try to move left, then right.
             validTypes = new MaterialTypes[] { MaterialTypes.None };
 
-            CellMovement.TryMoveAlongPath(cell, validTypes, false, new (int, int)[]
+            CellMovement.TryMoveAlongPath(cell, validTypes, false, new Position[]
             {
-                (-1, 0),
-                (1, 0)
+                new (-1, 0),
+                new (1, 0)
             });
         }
     }

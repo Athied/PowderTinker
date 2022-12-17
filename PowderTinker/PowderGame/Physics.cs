@@ -1,4 +1,5 @@
-﻿using static PowderGame.Program;
+﻿using System.Numerics;
+using static PowderGame.Program;
 
 namespace PowderGame
 {
@@ -6,7 +7,7 @@ namespace PowderGame
     {
         public static class ExternalForces
         {
-            public static float Gravity = 9.8f;
+            public static Vector2 Gravity = new Vector2(0, 9.8f);
         }
 
         private static readonly List<float> AvgMilliseconds = new List<float>();
@@ -27,12 +28,9 @@ namespace PowderGame
                 cell.OccupyingMaterial.RunPhysicsOnTimer(cell);
             });
 
-            AvgMilliseconds.Add((float)(DateTime.Now - t).TotalMilliseconds);
+            if (AvgMilliseconds.Count > 180) AvgMilliseconds.RemoveAt(0);
 
-            if (AvgMilliseconds.Count > 180)
-            {
-                AvgMilliseconds.RemoveAt(0);
-            }
+            AvgMilliseconds.Add((float)(DateTime.Now - t).TotalMilliseconds);
 
             AveragePhysicsTimeTaken = (float)AvgMilliseconds.Average();
         }

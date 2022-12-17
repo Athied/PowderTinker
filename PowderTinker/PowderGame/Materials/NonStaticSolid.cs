@@ -15,9 +15,9 @@
 
             MaterialTypes[] validTypes = new MaterialTypes[] { MaterialTypes.None, MaterialTypes.Liquid, MaterialTypes.Powder };
 
-            CellMovement.TryMoveAlongPath(cell, validTypes, true, new (int, int)[]
+            CellMovement.TryMoveAlongPath(cell, validTypes, true, new Position[]
             {
-                (0, 1)
+                new (0, 1)
             });
         }
     }

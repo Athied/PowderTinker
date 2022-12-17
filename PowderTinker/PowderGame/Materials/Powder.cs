@@ -8,6 +8,8 @@
         {
             if (cell.OccupyingMaterial != this) return;
 
+            RespondToExternalForces(cell);
+
             // Rules:
             // A: Powders will displace liquids rather than sit on top of them
             // 0: If there is a valid space n cells down, move down
@@ -16,11 +18,11 @@
 
             MaterialTypes[] validTypes = new MaterialTypes[] { MaterialTypes.None, MaterialTypes.Liquid };
 
-            CellMovement.TryMoveAlongPath(cell, validTypes, true, new (int, int)[]
+            CellMovement.TryMoveAlongPath(cell, validTypes, true, new Position[]
             {
-                (0, 1),
-                (-1, 1),
-                (1, 1)
+                new (0, 1),
+                new (-1, 1),
+                new (1, 1)
             });
         }
     }

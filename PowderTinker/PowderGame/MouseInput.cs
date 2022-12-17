@@ -23,20 +23,19 @@ namespace PowderGame
             int mx = Raylib.GetMouseX();
             int my = Raylib.GetMouseY();
 
-            return G_Cells.FirstOrDefault(c => mx / G_CellSize == c.GridX && my / G_CellSize == c.GridY);
+            return G_Cells.FirstOrDefault(c => mx / G_CellSize == c.GridPos.X && my / G_CellSize == c.GridPos.Y);
         }
 
         private static Materials.IMaterial GetMaterial()
         {
-            switch (SelectedMaterial)
+            return SelectedMaterial switch
             {
-                case 0: return new Materials.Sand();
-                case 1: return new Materials.Water();
-                case 2: return new Materials.Void();
-                case 3: return new Materials.Stone();
-            }
-
-            return new Materials.Void();
+                0 => new Materials.Sand(),
+                1 => new Materials.Water(),
+                2 => new Materials.Void(),
+                3 => new Materials.Stone(),
+                _ => new Materials.Void(),
+            };
         }
 
         public static void CheckMouseInput()
@@ -70,17 +69,11 @@ namespace PowderGame
 
         public static void SpawnMaterialsInZone(Cell centralCell)
         {
-            for (int i = centralCell.IndexX - BrushSize; i < centralCell.IndexX + BrushSize; i++)
+            for (int i = centralCell.Index.X - BrushSize; i < centralCell.Index.X + BrushSize; i++)
             {
-                for (int j = centralCell.IndexY - BrushSize; j < centralCell.IndexY + BrushSize; j++)
+                for (int j = centralCell.Index.Y - BrushSize; j < centralCell.Index.Y + BrushSize; j++)
                 {
-                    // 1 in 3 chance of spawning the material here
-
                     if (Helpers.RandomRange(0, 1) > BrushDensity) continue;
-
-
-
-                    //if (Raylib.GetRandomValue(0, 1) != 0) continue;
 
                     Cell? currentCell = Helpers.GetCellAtIndex(i, j);
                     if (currentCell == null) continue;

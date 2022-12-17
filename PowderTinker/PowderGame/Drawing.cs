@@ -18,7 +18,7 @@ namespace PowderGame
         {
             Cell? hoveredCell = MouseInput.GetHoveredCell();
 
-            string cellPos = hoveredCell != null ? $"Cell: {hoveredCell.OccupyingMaterial.Name} ({hoveredCell.IndexX}x{hoveredCell.IndexY})" : "Cell: unknown";
+            string cellPos = hoveredCell != null ? $"Cell: {hoveredCell.OccupyingMaterial.Name} ({hoveredCell.Index.X}x{hoveredCell.Index.Y})" : "Cell: unknown";
             string selectedMat = $"Using: {MouseInput.SelectedMaterialName}";
             string brushSize = $"Brush size: {MouseInput.BrushSize}";
             string brushDensity = $"Brush density: {MouseInput.BrushDensity:n1}";

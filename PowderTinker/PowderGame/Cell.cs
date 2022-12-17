@@ -5,22 +5,24 @@ namespace PowderGame
 {
     public class Cell
     {
-        public Cell(int _x, int _y, Materials.IMaterial _material)
+        public Cell(int x, int y, Materials.IMaterial _material)
         {
-            IndexX = _x;
-            IndexY = _y;
+            Index.X = x;
+            Index.Y = y;
 
             SetMaterial(_material);
         }
 
-        public readonly int IndexX;
-        public readonly int IndexY;
+        public Cell(Position index, Materials.IMaterial _material)
+        {
+            Index = index;
 
-        public int GridX { get { return (GameCorners.Left + IndexX * G_CellSize) / G_CellSize; } }
-        public int GridY { get { return (GameCorners.Top + IndexY * G_CellSize) / G_CellSize; } }
+            SetMaterial(_material);
+        }
 
-        public int ScreenX { get { return GameCorners.Left + IndexX * G_CellSize; } }
-        public int ScreenY { get { return GameCorners.Top + IndexY * G_CellSize; } }
+        public readonly Position Index;
+        public Position ScreenPos { get { return new Position(GameCorners.Left + Index.X * G_CellSize, GameCorners.Top + Index.Y * G_CellSize); } }
+        public Position GridPos { get { return new Position(ScreenPos.X / G_CellSize, ScreenPos.Y / G_CellSize); } }
 
         public int ActiveCellsIndex { get; set; }
 
@@ -42,7 +44,7 @@ namespace PowderGame
         public void Draw()
         {
             if (OccupyingMaterial.MaterialType == MaterialTypes.None) return;
-            Raylib.DrawRectangle(GridX * G_CellSize, GridY * G_CellSize, G_CellSize, G_CellSize, color);
+            Raylib.DrawRectangle(GridPos.X * G_CellSize, GridPos.Y * G_CellSize, G_CellSize, G_CellSize, color);
         }
 
         public void SetMaterial(Materials.IMaterial material)
