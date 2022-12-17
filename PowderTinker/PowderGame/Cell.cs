@@ -53,7 +53,7 @@ namespace PowderGame
             SetColor();
         }
 
-        /// <summary> Takes the material from a cell and sets that cell's material to a given new one. </summary>
+        /// <summary> Takes the material from a cell and sets that cell's material to a given one. </summary>
         public void ReplaceMaterial(Cell replacementSource, Materials.IMaterial newMaterial)
         {
             SetMaterial(replacementSource.OccupyingMaterial);
