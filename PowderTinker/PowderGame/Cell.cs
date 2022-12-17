@@ -24,8 +24,6 @@ namespace PowderGame
         public Position ScreenPos { get { return new Position(GameCorners.Left + Index.X * G_CellSize, GameCorners.Top + Index.Y * G_CellSize); } }
         public Position GridPos { get { return new Position(ScreenPos.X / G_CellSize, ScreenPos.Y / G_CellSize); } }
 
-        public int ActiveCellsIndex { get; set; }
-
         private Color color = Color.RED;
         public Color Color { get { return color; } }
 

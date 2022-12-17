@@ -4,7 +4,7 @@
     {
         public sealed override MaterialTypes MaterialType { get { return MaterialTypes.Liquid; } }
 
-        public override void RunPhysics(Cell cell)
+        protected override void UpdateVelocity(Cell cell)
         {
             if (cell.OccupyingMaterial != this) return;
 
@@ -23,7 +23,7 @@
             {
                 new (0, 1),
                 new (-1, 1),
-                new (1, 1),
+                new (1, 1)
             });
 
             // If any of previous 3 movement checks succeeded, do not move.

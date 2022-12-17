@@ -7,6 +7,7 @@ TODO:
 - Physics
   - Complete physics rules for basic 4 material types - solid, liquid, gas, powder
   - Add external forces such as gravity and wind
+  - Change cells' local understanding of direction based on the direction of gravity
   - Do extra pass over physics rules, adding more in-depth features such as density and buoyancy
   - Add explosions
   - Add fire as a 5th material type (?)

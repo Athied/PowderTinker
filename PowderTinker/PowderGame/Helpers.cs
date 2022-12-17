@@ -23,5 +23,58 @@ namespace PowderGame
 
             return Program.G_CellLookup[x, y];
         }
+
+        public static bool CheckForMaterialsRelative(Cell originCell, int offsetX, int offsetY, MaterialTypes materialType)
+        {
+            return CheckForMaterialsRelative(originCell, offsetX, offsetY, new MaterialTypes[] { materialType });
+        }
+
+        public static bool CheckForMaterialsRelative(Cell originCell, Position offset, MaterialTypes materialType)
+        {
+            return CheckForMaterialsRelative(originCell, offset.X, offset.Y, new MaterialTypes[] { materialType });
+        }
+
+        public static bool CheckForMaterialsRelative(Cell originCell, Position offset, MaterialTypes[] materialTypes)
+        {
+            return CheckForMaterialsRelative(originCell, offset.X, offset.Y, materialTypes);
+        }
+
+        public static bool CheckForMaterialsRelative(Cell originCell, int offsetX, int offsetY, MaterialTypes[] materialTypes)
+        {
+            Cell? foundCell = GetCellAtIndex(originCell.Index.X + offsetX, originCell.Index.Y + offsetY);
+            if (foundCell == null) return materialTypes.Contains(MaterialTypes.OutsideMap);
+
+            return materialTypes.Contains(foundCell.OccupyingMaterial.MaterialType);
+        }
+
+        public static bool CheckIfSurroundedByMaterials(Cell cell, MaterialTypes materialType)
+        {
+            return CheckIfSurroundedByMaterials(cell, new MaterialTypes[] { materialType });
+        }
+
+        public static bool CheckIfSurroundedByMaterials(Cell cell, MaterialTypes[] materialTypes)
+        {
+            if (!CheckForMaterialsRelative(cell, 0, -1, materialTypes)) return false;
+            if (!CheckForMaterialsRelative(cell, 1, 0, materialTypes)) return false;
+            if (!CheckForMaterialsRelative(cell, 0, 1, materialTypes)) return false;
+            if (!CheckForMaterialsRelative(cell, 1, 0, materialTypes)) return false;
+
+            return true;
+        }
+
+        public static bool CheckIfTouchingMaterials(Cell cell, MaterialTypes materialType)
+        {
+            return CheckIfTouchingMaterials(cell, new MaterialTypes[] { materialType });
+        }
+
+        public static bool CheckIfTouchingMaterials(Cell cell, MaterialTypes[] materialTypes)
+        {
+            if (!CheckForMaterialsRelative(cell, 0, -1, materialTypes)) return true;
+            if (!CheckForMaterialsRelative(cell, 1, 0, materialTypes)) return true;
+            if (!CheckForMaterialsRelative(cell, 0, 1, materialTypes)) return true;
+            if (!CheckForMaterialsRelative(cell, 1, 0, materialTypes)) return true;
+
+            return false;
+        }
     }
 }

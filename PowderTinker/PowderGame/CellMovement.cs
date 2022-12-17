@@ -1,36 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Raylib_cs;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PowderGame
 {
+    [Obsolete]
     static class CellMovement
     {
-        public static bool TryTeleport(Cell cell, MaterialTypes[] validTypes, Position index, bool swapCells)
-        {
-            Cell? target = Helpers.GetCellAtIndex(index.X, index.Y);
-            if (target == null) return false;
-
-            if (validTypes.Contains(target.OccupyingMaterial.MaterialType))
-            {
-                if (!swapCells) target.ReplaceMaterial(cell, new Materials.Void());
-                else target.ReplaceMaterial(cell, target.OccupyingMaterial);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public static bool TryTeleportRelative(Cell cell, MaterialTypes[] validTypes, Position offset, bool swapCells)
+        [Obsolete]
+        public static bool TryMoveRelative(Cell cell, MaterialTypes[] validTypes, Position offset, bool swapCells)
         {
             Position moveToPos = new Position(cell.Index.X + offset.X, cell.Index.Y + offset.Y);
-            return TryTeleport(cell, validTypes, moveToPos, swapCells);
+            return TryMove(cell, validTypes, moveToPos, swapCells);
         }
 
+        [Obsolete]
         public static int TryMoveAlongPath(Cell cell, MaterialTypes[] validTypes, bool swapCells, Position[] pathPoints)
         {
             int steps = 0;
@@ -38,7 +21,7 @@ namespace PowderGame
             foreach (Position offset in pathPoints)
             {
                 Position moveToPos = new Position(cell.Index.X + offset.X, cell.Index.Y + offset.Y);
-                if (TryTeleport(cell, validTypes, moveToPos, swapCells)) return steps;
+                if (TryMove(cell, validTypes, moveToPos, swapCells)) return steps;
 
                 steps++;
             }
@@ -46,14 +29,81 @@ namespace PowderGame
             return -1;
         }
 
-        public static void FindOptimalPath(Position p1, Position p2)
+        [Obsolete]
+        public static bool TryMove(Cell cell, MaterialTypes[] validTypes, Position index, bool swapCells)
         {
-            if (p1.Equals(p2)) return;
+            Position[] path = FindOptimalPath(cell.Index, index);
+            cell.OccupyingMaterial.LastProjectedPath = path;
+
+            if (path.Length == 0)
+            {
+                Cell? target = Helpers.GetCellAtIndex(index.X, index.Y);
+                if (target == null) return false;
+
+                Move(cell, target, swapCells);
+                return true;
+            }
+
+            int steps = -1;
+            for (int i = 0; i < path.Length; i++)
+            {
+                Cell? target = Helpers.GetCellAtIndex(path[i].X, path[i].Y);
+                if (target == null) continue;
+
+                if (validTypes.Contains(target.OccupyingMaterial.MaterialType))
+                {
+                    steps++;
+
+                    Move(cell, target, swapCells);
+                }
+            }
+
+            return steps != -1;
+        }
+
+        [Obsolete]
+        private static void Move(Cell from, Cell to, bool swapCells)
+        {
+            if (!swapCells) to.ReplaceMaterial(from, new Materials.Void());
+            else to.ReplaceMaterial(from, to.OccupyingMaterial);
+        }
+
+        [Obsolete]
+        public static Position[] FindOptimalPath(Position p1, Position p2)
+        {
+            if (p1.Equals(p2)) return new Position[] { p2 };
 
             int xDiff = p1.X - p2.X;
-            int yDiff = p1.X - p2.X;
+            int yDiff = p1.Y - p2.Y;
 
+            bool xDiffLarger = Math.Abs(xDiff) > Math.Abs(yDiff);
 
+            int xMod = xDiff < 0 ? 1 : -1;
+            int yMod = yDiff < 0 ? 1 : -1;
+
+            int longerSideLen = Math.Max(Math.Abs(xDiff), Math.Abs(yDiff));
+            int shorterSideLen = Math.Min(Math.Abs(xDiff), Math.Abs(yDiff));
+
+            float slope = (shorterSideLen == 0 || longerSideLen == 0) ? 0 : ((float)shorterSideLen / longerSideLen);
+
+            int shorterSideInc;
+
+            List<Position> path = new List<Position>();
+
+            for (int i = 1; i <= longerSideLen; i++)
+            {
+                shorterSideInc = (int)Math.Round(i * slope);
+
+                int xInc = xDiffLarger ? i : shorterSideInc;
+                int yInc = xDiffLarger ? shorterSideInc : i;
+
+                int currentX = p1.X + (xInc * xMod);
+                int currentY = p1.Y + (yInc * yMod);
+
+                path.Add(new Position(currentX, currentY));
+            }
+
+            return path.ToArray();
         }
     }
 }

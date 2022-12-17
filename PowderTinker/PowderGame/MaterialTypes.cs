@@ -4,6 +4,6 @@ namespace PowderGame
 {
     public enum MaterialTypes
     {
-        Solid, Powder, Liquid, Gas, None
+        Solid, Powder, Liquid, Gas, None, OutsideMap
     }
 }

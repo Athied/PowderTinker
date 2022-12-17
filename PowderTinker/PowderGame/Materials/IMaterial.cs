@@ -13,10 +13,17 @@ namespace PowderGame.Materials
 
         float OverallSpeed { get; }
 
-        Vector2 Velocity { get; set; }
+        float Density { get; }
+        float DragResistance { get; }
 
-        float PhysicsTimer { get; }
-        void RunPhysicsOnTimer(Cell cell);
+        Force TerminalVelocity { get; set; }
+        Force Velocity { get; set; }
+        Force Drag { get; set; }
+
+        Vector2 PhysicsTimer { get; }
         void RunPhysics(Cell cell);
+
+        bool DrawDebugInfo { get; set; }
+        Position[] LastProjectedPath { get; set; }
     }
 }

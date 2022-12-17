@@ -1,4 +1,6 @@
 ﻿using Raylib_cs;
+using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace PowderGame
 {
@@ -40,5 +42,17 @@ namespace PowderGame
 
         public int X;
         public int Y;
+    }
+
+    public struct MaterialTarget
+    {
+        public MaterialTarget(Vector2 desiredIndex, MaterialTypes[] desiredMaterialTypes)
+        {
+            DesiredIndex = desiredIndex;
+            DesiredMaterialTypes = desiredMaterialTypes;
+        }
+
+        public Vector2 DesiredIndex;
+        public MaterialTypes[] DesiredMaterialTypes;
     }
 }

@@ -4,9 +4,9 @@
     {
         public sealed override MaterialTypes MaterialType { get { return MaterialTypes.Solid; } }
 
-        public override void RunPhysics(Cell cell)
+        protected override void UpdateVelocity(Cell cell)
         {
-            base.RunPhysics(cell);
+            base.UpdateVelocity(cell);
         }
     }
 }
