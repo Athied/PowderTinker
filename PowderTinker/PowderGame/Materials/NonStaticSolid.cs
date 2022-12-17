@@ -6,6 +6,8 @@
 
         public override void RunPhysics(Cell cell)
         {
+            if (cell.OccupyingMaterial != this) return;
+
             // Rules:
             // A: Solids will displace liquids rather than sit on top of them
             // B: Solids will displace powders rather than sit on top of them

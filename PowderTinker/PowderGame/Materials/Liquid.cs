@@ -6,6 +6,8 @@
 
         public override void RunPhysics(Cell cell)
         {
+            if (cell.OccupyingMaterial != this) return;
+
             // Rules:
             // 0: If there is a valid space n cells down, move down
             // 1: If there is a valid space n cells down and to the left, move there
