@@ -13,10 +13,10 @@ namespace PowderGame
             Cell? target = Helpers.GetCellAtIndex(indexX, indexY);
             if (target == null) return false;
 
-            if (validTypes.Contains(target.Material.MaterialType))
+            if (validTypes.Contains(target.OccupyingMaterial.MaterialType))
             {
-                if (!swapCells) target.SwapMaterial(cell);
-                else target.SwapMaterial(cell, target.Material);
+                if (!swapCells) target.ReplaceMaterial(cell, new Materials.Void());
+                else target.ReplaceMaterial(cell, target.OccupyingMaterial);
 
                 return true;
             }

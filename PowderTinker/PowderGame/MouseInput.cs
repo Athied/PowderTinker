@@ -26,7 +26,7 @@ namespace PowderGame
             return G_Cells.FirstOrDefault(c => mx / G_CellSize == c.GridX && my / G_CellSize == c.GridY);
         }
 
-        private static IMaterial GetMaterial()
+        private static Materials.IMaterial GetMaterial()
         {
             switch (SelectedMaterial)
             {
@@ -85,11 +85,11 @@ namespace PowderGame
                     Cell? currentCell = Helpers.GetCellAtIndex(i, j);
                     if (currentCell == null) continue;
 
-                    IMaterial material = GetMaterial();
+                    Materials.IMaterial material = GetMaterial();
 
-                    if (currentCell.Material.MaterialType == MaterialTypes.None || material.MaterialType == MaterialTypes.None)
+                    if (currentCell.OccupyingMaterial.MaterialType == MaterialTypes.None || material.MaterialType == MaterialTypes.None)
                     {
-                        currentCell.Material = material;
+                        currentCell.SetMaterial(material);
                     }
                 }
             }

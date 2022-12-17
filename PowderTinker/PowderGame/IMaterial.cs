@@ -1,12 +1,10 @@
 ﻿using Raylib_cs;
 using System.Numerics;
 
-namespace PowderGame
+namespace PowderGame.Materials
 {
     public interface IMaterial
     {
-        float PhysicsTimer { get; set; }
-
         MaterialTypes MaterialType { get; }
 
         string Name { get; }
@@ -16,5 +14,9 @@ namespace PowderGame
         float OverallSpeed { get; }
 
         Vector2 Velocity { get; set; }
+
+        float PhysicsTimer { get; }
+        void RunPhysicsOnTimer(Cell cell);
+        void RunPhysics(Cell cell);
     }
 }

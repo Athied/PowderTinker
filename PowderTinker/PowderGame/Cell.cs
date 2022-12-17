@@ -5,14 +5,12 @@ namespace PowderGame
 {
     public class Cell
     {
-        public Cell(int _x, int _y, IMaterial _material)
+        public Cell(int _x, int _y, Materials.IMaterial _material)
         {
             IndexX = _x;
             IndexY = _y;
 
-            material = _material;
-
-            SetColor();
+            SetMaterial(_material);
         }
 
         public readonly int IndexX;
@@ -26,34 +24,40 @@ namespace PowderGame
 
         public int ActiveCellsIndex { get; set; }
 
-        private Color color;
+        private Color color = Color.RED;
         public Color Color { get { return color; } }
 
-        private IMaterial material;
-        public IMaterial Material { get { return material; } set { material = value; SetColor(); } }
+        public Materials.IMaterial OccupyingMaterial { get; private set; } = default!;
 
-        public void SetColor()
+        private void SetColor()
         {
-            int r = (int)Helpers.RandomRange(material.Colors.Min.r, material.Colors.Max.r);
-            int g = (int)Helpers.RandomRange(material.Colors.Min.g, material.Colors.Max.g);
-            int b = (int)Helpers.RandomRange(material.Colors.Min.b, material.Colors.Max.b);
-            int a = (int)Helpers.RandomRange(material.Colors.Min.a, material.Colors.Max.a);
+            int r = (int)Helpers.RandomRange(OccupyingMaterial.Colors.Min.r, OccupyingMaterial.Colors.Max.r);
+            int g = (int)Helpers.RandomRange(OccupyingMaterial.Colors.Min.g, OccupyingMaterial.Colors.Max.g);
+            int b = (int)Helpers.RandomRange(OccupyingMaterial.Colors.Min.b, OccupyingMaterial.Colors.Max.b);
+            int a = (int)Helpers.RandomRange(OccupyingMaterial.Colors.Min.a, OccupyingMaterial.Colors.Max.a);
 
             color = new Color(r, g, b, a);
         }
 
         public void Draw()
         {
-            if (Material.MaterialType == MaterialTypes.None) return;
+            if (OccupyingMaterial.MaterialType == MaterialTypes.None) return;
             Raylib.DrawRectangle(GridX * G_CellSize, GridY * G_CellSize, G_CellSize, G_CellSize, color);
         }
 
-        public void SwapMaterial(Cell replacementSource, IMaterial? newMaterial = null)
+        public void SetMaterial(Materials.IMaterial material)
         {
-            newMaterial ??= new Materials.Void();
+            material ??= new Materials.Void();
 
-            Material = replacementSource.Material;
-            replacementSource.Material = newMaterial;
+            OccupyingMaterial = material;
+            SetColor();
+        }
+
+        /// <summary> Takes the material from a cell and sets that cell's material to a given new one. </summary>
+        public void ReplaceMaterial(Cell replacementSource, Materials.IMaterial newMaterial)
+        {
+            SetMaterial(replacementSource.OccupyingMaterial);
+            replacementSource.SetMaterial(newMaterial);
         }
     }
 }
