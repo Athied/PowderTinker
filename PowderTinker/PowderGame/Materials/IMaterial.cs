@@ -22,6 +22,7 @@ namespace PowderGame.Materials
 
         Vector2 PhysicsTimer { get; }
         void RunPhysics(Cell cell);
+        bool KillNextFrame { get; }
 
         bool DrawDebugInfo { get; set; }
         Position[] LastProjectedPath { get; set; }

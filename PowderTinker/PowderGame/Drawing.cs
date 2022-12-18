@@ -1,4 +1,5 @@
-﻿using Raylib_cs;
+﻿using PowderGame.Materials;
+using Raylib_cs;
 using System.IO;
 using System.Text;
 using static PowderGame.Program;
@@ -82,23 +83,25 @@ namespace PowderGame
 
             foreach (Cell cell in cells)
             {
-                if (cell.OccupyingMaterial.LastProjectedPath != null)
+                IMaterial m = cell.OccupyingMaterial;
+
+                if (m.LastProjectedPath != null)
                 {
-                    for (int i = 0; i < cell.OccupyingMaterial.LastProjectedPath.Length; i++)
+                    for (int i = 0; i < m.LastProjectedPath.Length; i++)
                     {
-                        Position pos = cell.OccupyingMaterial.LastProjectedPath[i];
+                        Position pos = m.LastProjectedPath[i];
 
                         Cell? c = Helpers.GetCellAtIndex(pos.X, pos.Y);
                         if (c == null) continue;
 
                         Color col = i == 0 ? col = Color.BLUE : Color.RED;
-                        if (i == cell.OccupyingMaterial.LastProjectedPath.Length - 1) col = Color.GREEN;
+                        if (i == m.LastProjectedPath.Length - 1) col = Color.GREEN;
 
                         Raylib.DrawRectangle(c.GridPos.X * G_CellSize, c.GridPos.Y * G_CellSize, G_CellSize, G_CellSize, col);
                     }
                 }
 
-                Raylib.DrawText($"{(int)cell.OccupyingMaterial.Velocity.X}x{(int)cell.OccupyingMaterial.Velocity.Y}", cell.ScreenPos.X, cell.ScreenPos.Y - G_CellSize, 16, Color.PINK);
+                Raylib.DrawText($"{(int)m.Velocity.X}x{(int)m.Velocity.Y}", cell.ScreenPos.X, cell.ScreenPos.Y - G_CellSize, 16, Color.PINK);
             }
         }
     }

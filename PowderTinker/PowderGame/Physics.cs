@@ -42,6 +42,8 @@ namespace PowderGame
         {
             IMaterial m = cell.OccupyingMaterial;
 
+            int FPS = Raylib.GetFPS();
+
             // Gravity & Drag
 
             bool applyGravityX = false;
@@ -54,8 +56,8 @@ namespace PowderGame
 
             if (applyGravityX || applyGravityY)
             {
-                float xGrav = applyGravityX ? ExternalForces.Gravity.X / Raylib.GetFPS() : 0;
-                float yGrav = applyGravityY ? ExternalForces.Gravity.Y / Raylib.GetFPS() : 0;
+                float xGrav = applyGravityX ? ExternalForces.Gravity.X / FPS : 0;
+                float yGrav = applyGravityY ? ExternalForces.Gravity.Y / FPS : 0;
                 Vector2 gravityPerFrame = new Vector2(xGrav, yGrav);
 
                 // Faking terminal velocity and drag

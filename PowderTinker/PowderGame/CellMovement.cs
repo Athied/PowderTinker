@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace PowderGame
 {
-    [Obsolete]
+    [Obsolete(message: "Left in for reference and potential niche purposes. \nPlease move the cells by managing their velocity in their respective UpdateVelocity overrides.")]
     static class CellMovement
     {
         [Obsolete]

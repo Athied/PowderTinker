@@ -7,6 +7,11 @@ namespace PowderGame.Materials
     {
         public sealed override MaterialTypes MaterialType { get { return MaterialTypes.Powder; } }
 
+        // Default values for powders
+        public virtual float PourSpeed { get { return 10; } }
+        public override float Density { get { return 700; } }
+        public override float DragResistance { get { return 25; } }
+
         protected override void UpdateVelocity(Cell cell)
         {
             if (cell.OccupyingMaterial != this) return;
@@ -15,38 +20,23 @@ namespace PowderGame.Materials
 
             MaterialTypes[] m = new MaterialTypes[] { MaterialTypes.Powder, MaterialTypes.Solid };
 
+            // Basic rules:
+            // 0: If there is a valid space 1 cell down, move down
+            // 1: If there is a valid space 1 cell down and to the left, move there
+            // 2: If there is a valid space 1 cell down and to the right, move there
+
             if (!Helpers.CheckForMaterialsRelative(cell, 0, 1, m)) return;
 
             if (!Helpers.CheckForMaterialsRelative(cell, 1, 1, m))
             {
-                Velocity.AddRaw(10, 0);
+                Velocity.AddRaw(PourSpeed, 0);
                 return;
             }
 
             if (!Helpers.CheckForMaterialsRelative(cell, -1, 1, m))
             {
-                Velocity.AddRaw(-10, 0);
+                Velocity.AddRaw(-PourSpeed, 0);
             }
-
-            //float x = Velocity.Y / 5;
-            //float y = x > 0 ? x : 0;
-
-            //Velocity = new Vector2(x, y);
-
-            // Rules:
-            // A: Powders will displace liquids rather than sit on top of them
-            // 0: If there is a valid space n cells down, move down
-            // 1: If there is a valid space n cells down and to the left, move there
-            // 2: If there is a valid space n cells down and to the right, move there
-
-            //MaterialTypes[] validTypes = new MaterialTypes[] { MaterialTypes.None, MaterialTypes.Liquid };
-
-            //CellMovement.TryMoveAlongPath(cell, validTypes, true, new Position[]
-            //{
-            //    new (0, 1),
-            //    new (-1, 1),
-            //    new (1, 1)
-            //});
         }
     }
 }

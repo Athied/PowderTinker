@@ -1,4 +1,5 @@
 ﻿using Raylib_cs;
+using System.Net.Security;
 using System.Numerics;
 
 using static PowderGame.Program;
@@ -27,9 +28,16 @@ namespace PowderGame.Materials
         public virtual ColorRange Colors { get { return new ColorRange(Color.BLACK, Color.BLACK); } }
 
         public virtual float OverallSpeed { get { return 2; } }
+        public bool KillNextFrame { get; protected set; }
 
         public void RunPhysics(Cell cell)
         {
+            if (KillNextFrame)
+            {
+                cell.SetMaterial(new Void());
+                return;
+            }
+
             UpdateVelocity(cell);
 
             float xTime = Raylib.GetFrameTime() * G_PhysicsRate;
@@ -60,25 +68,40 @@ namespace PowderGame.Materials
             }
         }
 
-        protected virtual void MoveToCell(Cell cell, int x, int y)
+        protected virtual bool MoveToCell(Cell cell, int x, int y)
         {
             Cell? targetCell = Helpers.GetCellAtIndex(cell.Index.X + x, cell.Index.Y + y);
-            if (targetCell == null) return;
+            if (targetCell == null) return false;
 
-            if (targetCell.OccupyingMaterial.MaterialType == MaterialTypes.None)
+            if (MaterialType == MaterialTypes.Solid || MaterialType == MaterialTypes.Powder)
             {
-                targetCell.ReplaceMaterial(cell, new Void());
+                if (targetCell.OccupyingMaterial.MaterialType == MaterialTypes.None)
+                {
+                    targetCell.ReplaceMaterial(cell, new Void());
+                    return true;
+                }
+
+                if (targetCell.OccupyingMaterial.MaterialType == MaterialTypes.Liquid)
+                {
+                    targetCell.ReplaceMaterial(cell, targetCell.OccupyingMaterial);
+                    return true;
+                }
+            }
+            else if (MaterialType == MaterialTypes.Liquid)
+            {
+                if (targetCell.OccupyingMaterial.MaterialType == MaterialTypes.None)
+                {
+                    targetCell.ReplaceMaterial(cell, new Void());
+                    return true;
+                }
             }
 
-            if (targetCell.OccupyingMaterial.MaterialType == MaterialTypes.Liquid)
-            {
-                targetCell.ReplaceMaterial(cell, targetCell.OccupyingMaterial);
-            }
+            return false;
 
-            if (targetCell.OccupyingMaterial.MaterialType == MaterialTypes.Solid || targetCell.OccupyingMaterial.MaterialType == MaterialTypes.Powder)
-            {
-                // todo: retaining and redistributing energy
-            }
+            //if (targetCell.OccupyingMaterial.MaterialType == MaterialTypes.Solid || targetCell.OccupyingMaterial.MaterialType == MaterialTypes.Powder)
+            //{
+            //    // todo: retaining and redistributing energy
+            //}
         }
     }
 }

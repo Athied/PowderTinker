@@ -13,20 +13,11 @@ namespace PowderGame
         public float X;
         public float Y;
 
-        public Force Product(Vector2 other)
-        {
-            return new Force(X * other.X, Y * other.Y);
-        }
+        public bool Equals(Force other) { return X == other.X && Y == other.Y; }
 
-        public Force Product(Force other)
-        {
-            return new Force(X * other.X, Y * other.Y);
-        }
-
-        public Force Product(float other)
-        {
-            return new Force(X * other, Y * other);
-        }
+        public Force Product(Vector2 other) { return new Force(X * other.X, Y * other.Y); }
+        public Force Product(Force other) { return new Force(X * other.X, Y * other.Y); }
+        public Force Product(float other) { return new Force(X * other, Y * other); }
 
         public void AddRaw(Vector2 f) { AddRaw(f.X, f.Y); }
         public void AddRaw(Force f) { AddRaw(f.X, f.Y); }

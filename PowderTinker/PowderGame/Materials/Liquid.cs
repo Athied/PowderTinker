@@ -1,51 +1,78 @@
-﻿namespace PowderGame.Materials
+﻿using Raylib_cs;
+
+namespace PowderGame.Materials
 {
     public abstract class Liquid : BaseMaterial
     {
         public sealed override MaterialTypes MaterialType { get { return MaterialTypes.Liquid; } }
 
+        // Default values for liquids
+        public virtual float PourSpeed { get { return 25; } }
+        public virtual float DispersionSpeed { get { return 1500; } }
+        public override float Density { get { return 500; } }
+        public override float DragResistance { get { return 25; } }
+
         protected override void UpdateVelocity(Cell cell)
         {
             if (cell.OccupyingMaterial != this) return;
 
-            // Rules:
-            // 0: If there is a valid space n cells down, move down
-            // 1: If there is a valid space n cells down and to the left, move there
-            // 2: If there is a valid space n cells down and to the right, move there
-            // 3: If there is a valid space n cells to the left and right, stop.
+            Physics.ApplyExternalForces(cell);
 
-            // 4: Otherwise, if there is a valid space n cells to the left, move there
-            // 5: If there is a valid space n cells to the right, move there
+            // Basic Rules:
+            // 0: If there is a valid space 1 cell down, move down
+            // 1: If there is a valid space 1 cell down and to the left, move there
+            // 2: If there is a valid space 1 cell down and to the right, move there
+            // 3: If there is a valid space 1 cell to the left and right, stop.
 
-            MaterialTypes[] validTypes = new MaterialTypes[] { MaterialTypes.None };
+            float xDragForce = Velocity.X * (Physics.ExternalForces.AirDensity / (DragResistance / 4));
 
-            int a = CellMovement.TryMoveAlongPath(cell, validTypes, false, new Position[]
+            if (Helpers.CheckForMaterialsRelative(cell, 0, 1, new MaterialTypes[] { MaterialTypes.None, MaterialTypes.OutsideMap }))
             {
-                new (0, 1),
-                new (-1, 1),
-                new (1, 1)
-            });
+                Velocity.Reduce(xDragForce, 0);
+                return;
+            }
 
-            // If any of previous 3 movement checks succeeded, do not move.
-            if (a != -1) return;
+            bool downLeftEmpty = Helpers.CheckForMaterialsRelative(cell, -1, 1, MaterialTypes.None);
+            bool downRightEmpty = Helpers.CheckForMaterialsRelative(cell, 1, 1, MaterialTypes.None);
 
-            // If both the left and right spaces are empty, do not move.
-            Cell? l = Helpers.GetCellAtIndex(cell.Index.X - 1, cell.Index.Y);
-            if (l == null) return;
-
-            Cell? r = Helpers.GetCellAtIndex(cell.Index.X + 1, cell.Index.Y);
-            if (r == null) return;
-
-            if (l.OccupyingMaterial.MaterialType == MaterialTypes.None && r.OccupyingMaterial.MaterialType == MaterialTypes.None) return;
-
-            // Otherwise, try to move left, then right.
-            validTypes = new MaterialTypes[] { MaterialTypes.None };
-
-            CellMovement.TryMoveAlongPath(cell, validTypes, false, new Position[]
+            if (downLeftEmpty && downRightEmpty)
             {
-                new (-1, 0),
-                new (1, 0)
-            });
+                Velocity.Reduce(xDragForce, 0);
+                return;
+            }
+
+            if (downLeftEmpty)
+            {
+                Velocity.AddRaw(-PourSpeed, 0);
+                return;
+            }
+
+            if (downRightEmpty)
+            {
+                Velocity.AddRaw(PourSpeed, 0);
+                return;
+            }
+
+            bool leftEmpty = Helpers.CheckForMaterialsRelative(cell, -1, 0, MaterialTypes.None);
+            bool rightEmpty = Helpers.CheckForMaterialsRelative(cell, 1, 0, MaterialTypes.None);
+
+            if (leftEmpty && rightEmpty)
+            {
+                Velocity.Reduce(xDragForce, 0);
+                return;
+            }
+
+            if (leftEmpty)
+            {
+                if (Velocity.X > 0) Velocity = new Force(0, 0);
+                Velocity.AddRaw(-DispersionSpeed, 0);
+            }
+
+            if (rightEmpty)
+            {
+                if (Velocity.X < 0) Velocity = new Force(0, 0);
+                Velocity.AddRaw(DispersionSpeed, 0);
+            }
         }
     }
 }
