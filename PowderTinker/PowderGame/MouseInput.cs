@@ -1,8 +1,6 @@
 ﻿using Raylib_cs;
-using System;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using static PowderGame.Program;
+
+using static PowderGame.Cells;
 
 namespace PowderGame
 {
@@ -23,7 +21,7 @@ namespace PowderGame
             int mx = Raylib.GetMouseX();
             int my = Raylib.GetMouseY();
 
-            return G_Cells.FirstOrDefault(c => mx / G_CellSize == c.GridPos.X && my / G_CellSize == c.GridPos.Y);
+            return CellsEnumerable.FirstOrDefault(c => mx / CellSize == c.GridPos.X && my / CellSize == c.GridPos.Y);
         }
 
         private static Materials.IMaterial GetMaterial()
@@ -83,7 +81,7 @@ namespace PowderGame
                 {
                     if (Helpers.RandomRange(0, 1) > BrushDensity) continue;
 
-                    Cell? currentCell = Helpers.GetCellAtIndex(i, j);
+                    Cell? currentCell = Cells.FindByIndex(i, j);
                     if (currentCell == null) continue;
 
                     Materials.IMaterial material = GetMaterial();

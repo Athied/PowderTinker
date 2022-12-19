@@ -12,7 +12,7 @@ namespace PowderGame.Materials
         public override float Density { get { return 500; } }
         public override float DragResistance { get { return 25; } }
 
-        protected override void UpdateVelocity(Cell cell)
+        protected override void UpdateVelocity(Cells.Cell cell)
         {
             if (cell.OccupyingMaterial != this) return;
 
@@ -26,14 +26,14 @@ namespace PowderGame.Materials
 
             float xDragForce = Velocity.X * (Physics.ExternalForces.AirDensity / (DragResistance / 4));
 
-            if (Helpers.CheckForMaterialsRelative(cell, 0, 1, new MaterialTypes[] { MaterialTypes.None, MaterialTypes.OutsideMap }))
+            if (Cells.QueryMaterial(cell, 0, 1, new MaterialTypes[] { MaterialTypes.None, MaterialTypes.OutsideMap }))
             {
                 Velocity.Reduce(xDragForce, 0);
                 return;
             }
 
-            bool downLeftEmpty = Helpers.CheckForMaterialsRelative(cell, -1, 1, MaterialTypes.None);
-            bool downRightEmpty = Helpers.CheckForMaterialsRelative(cell, 1, 1, MaterialTypes.None);
+            bool downLeftEmpty = Cells.QueryMaterial(cell, -1, 1, MaterialTypes.None);
+            bool downRightEmpty = Cells.QueryMaterial(cell, 1, 1, MaterialTypes.None);
 
             if (downLeftEmpty && downRightEmpty)
             {
@@ -53,8 +53,8 @@ namespace PowderGame.Materials
                 return;
             }
 
-            bool leftEmpty = Helpers.CheckForMaterialsRelative(cell, -1, 0, MaterialTypes.None);
-            bool rightEmpty = Helpers.CheckForMaterialsRelative(cell, 1, 0, MaterialTypes.None);
+            bool leftEmpty = Cells.QueryMaterial(cell, -1, 0, MaterialTypes.None);
+            bool rightEmpty = Cells.QueryMaterial(cell, 1, 0, MaterialTypes.None);
 
             if (leftEmpty && rightEmpty)
             {

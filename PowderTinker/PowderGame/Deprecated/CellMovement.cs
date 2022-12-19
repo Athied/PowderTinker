@@ -1,5 +1,4 @@
-﻿using Raylib_cs;
-using System.Numerics;
+﻿using static PowderGame.Cells;
 
 namespace PowderGame
 {
@@ -37,7 +36,7 @@ namespace PowderGame
 
             if (path.Length == 0)
             {
-                Cell? target = Helpers.GetCellAtIndex(index.X, index.Y);
+                Cell? target = Cells.FindByIndex(index.X, index.Y);
                 if (target == null) return false;
 
                 Move(cell, target, swapCells);
@@ -47,7 +46,7 @@ namespace PowderGame
             int steps = -1;
             for (int i = 0; i < path.Length; i++)
             {
-                Cell? target = Helpers.GetCellAtIndex(path[i].X, path[i].Y);
+                Cell? target = Cells.FindByIndex(path[i].X, path[i].Y);
                 if (target == null) continue;
 
                 if (validTypes.Contains(target.OccupyingMaterial.MaterialType))

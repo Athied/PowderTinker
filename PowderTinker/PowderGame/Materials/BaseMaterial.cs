@@ -3,6 +3,7 @@ using System.Net.Security;
 using System.Numerics;
 
 using static PowderGame.Program;
+using static PowderGame.Cells;
 
 namespace PowderGame.Materials
 {
@@ -70,7 +71,7 @@ namespace PowderGame.Materials
 
         protected virtual bool MoveToCell(Cell cell, int x, int y)
         {
-            Cell? targetCell = Helpers.GetCellAtIndex(cell.Index.X + x, cell.Index.Y + y);
+            Cell? targetCell = Cells.FindByIndex(cell.Index.X + x, cell.Index.Y + y);
             if (targetCell == null) return false;
 
             if (MaterialType == MaterialTypes.Solid || MaterialType == MaterialTypes.Powder)
@@ -97,11 +98,6 @@ namespace PowderGame.Materials
             }
 
             return false;
-
-            //if (targetCell.OccupyingMaterial.MaterialType == MaterialTypes.Solid || targetCell.OccupyingMaterial.MaterialType == MaterialTypes.Powder)
-            //{
-            //    // todo: retaining and redistributing energy
-            //}
         }
     }
 }

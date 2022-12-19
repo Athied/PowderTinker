@@ -1,7 +1,9 @@
 ﻿using PowderGame.Materials;
 using Raylib_cs;
 using System.Numerics;
+
 using static PowderGame.Program;
+using static PowderGame.Cells;
 
 namespace PowderGame
 {
@@ -22,7 +24,7 @@ namespace PowderGame
         {
             DateTime t = DateTime.Now;
 
-            IEnumerable<Cell> cells = G_Cells.Where(c => c.OccupyingMaterial.MaterialType != MaterialTypes.None).Reverse();
+            IEnumerable<Cell> cells = CellsEnumerable.Where(c => c.OccupyingMaterial.MaterialType != MaterialTypes.None).Reverse();
 
             ActiveCells = cells.Count();
 
@@ -49,10 +51,10 @@ namespace PowderGame
             bool applyGravityX = false;
             bool applyGravityY = false;
 
-            if (ExternalForces.Gravity.X < 0) applyGravityX = Helpers.CheckForMaterialsRelative(cell, -1, 0, MaterialTypes.None);
-            if (ExternalForces.Gravity.X > 0) applyGravityX = Helpers.CheckForMaterialsRelative(cell, 1, 0, MaterialTypes.None);
-            if (ExternalForces.Gravity.Y < 0) applyGravityY = Helpers.CheckForMaterialsRelative(cell, 0, -1, MaterialTypes.None);
-            if (ExternalForces.Gravity.Y > 0) applyGravityY = Helpers.CheckForMaterialsRelative(cell, 0, 1, MaterialTypes.None);
+            if (ExternalForces.Gravity.X < 0) applyGravityX = QueryMaterial(cell, -1, 0, MaterialTypes.None);
+            if (ExternalForces.Gravity.X > 0) applyGravityX = QueryMaterial(cell, 1, 0, MaterialTypes.None);
+            if (ExternalForces.Gravity.Y < 0) applyGravityY = QueryMaterial(cell, 0, -1, MaterialTypes.None);
+            if (ExternalForces.Gravity.Y > 0) applyGravityY = QueryMaterial(cell, 0, 1, MaterialTypes.None);
 
             if (applyGravityX || applyGravityY)
             {
@@ -78,12 +80,12 @@ namespace PowderGame
 
             MaterialTypes[] frictionSurfaces = new MaterialTypes[] { MaterialTypes.Solid, MaterialTypes.Powder, MaterialTypes.OutsideMap };
 
-            if (Helpers.CheckForMaterialsRelative(cell, 0, 1, frictionSurfaces) || Helpers.CheckForMaterialsRelative(cell, 0, -1, frictionSurfaces))
+            if (QueryMaterial(cell, 0, 1, frictionSurfaces) || QueryMaterial(cell, 0, -1, frictionSurfaces))
             {
                 m.Velocity.Reduce(1, 0);
             }
 
-            if (Helpers.CheckForMaterialsRelative(cell, 1, 0, frictionSurfaces) || Helpers.CheckForMaterialsRelative(cell, -1, 0, frictionSurfaces))
+            if (QueryMaterial(cell, 1, 0, frictionSurfaces) || QueryMaterial(cell, -1, 0, frictionSurfaces))
             {
                 m.Velocity.Reduce(0, 1);
             }

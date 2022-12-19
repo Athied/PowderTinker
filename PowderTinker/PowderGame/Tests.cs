@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static PowderGame.Cells;
+
 namespace PowderGame
 {
     public static class Tests
@@ -17,7 +19,7 @@ namespace PowderGame
                 {
                     Color col = (i + j) % 2 == 0 ? Color.GRAY : Color.LIGHTGRAY;
 
-                    Raylib.DrawRectangle(i * Program.G_CellSize, j * Program.G_CellSize, Program.G_CellSize, Program.G_CellSize, col);
+                    Raylib.DrawRectangle(i * CellSize, j * CellSize, CellSize, CellSize, col);
                 }
             }
         }

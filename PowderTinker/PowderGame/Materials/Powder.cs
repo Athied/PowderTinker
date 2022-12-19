@@ -12,7 +12,7 @@ namespace PowderGame.Materials
         public override float Density { get { return 700; } }
         public override float DragResistance { get { return 25; } }
 
-        protected override void UpdateVelocity(Cell cell)
+        protected override void UpdateVelocity(Cells.Cell cell)
         {
             if (cell.OccupyingMaterial != this) return;
 
@@ -25,15 +25,15 @@ namespace PowderGame.Materials
             // 1: If there is a valid space 1 cell down and to the left, move there
             // 2: If there is a valid space 1 cell down and to the right, move there
 
-            if (!Helpers.CheckForMaterialsRelative(cell, 0, 1, m)) return;
+            if (!Cells.QueryMaterial(cell, 0, 1, m)) return;
 
-            if (!Helpers.CheckForMaterialsRelative(cell, 1, 1, m))
+            if (!Cells.QueryMaterial(cell, 1, 1, m))
             {
                 Velocity.AddRaw(PourSpeed, 0);
                 return;
             }
 
-            if (!Helpers.CheckForMaterialsRelative(cell, -1, 1, m))
+            if (!Cells.QueryMaterial(cell, -1, 1, m))
             {
                 Velocity.AddRaw(-PourSpeed, 0);
             }

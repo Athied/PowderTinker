@@ -1,6 +1,6 @@
 ﻿using Raylib_cs;
 
-using static PowderGame.Helpers;
+using static PowderGame.Cells;
 
 namespace PowderGame
 {
@@ -11,11 +11,6 @@ namespace PowderGame
 
         public static readonly int G_GameW = 1280;
         public static readonly int G_GameH = 720;
-
-        public static readonly int G_CellSize = 5;
-
-        public static Cell[,] G_CellLookup = new Cell[G_GameW / G_CellSize, G_GameH / G_CellSize];
-        public static List<Cell> G_Cells = new();
 
         public static readonly float G_PhysicsTimerTarget = .2f;
         public static readonly float G_PhysicsRate = 1f;
@@ -36,7 +31,7 @@ namespace PowderGame
             Raylib.InitWindow(WinW, WinH, "Hello World");
             Raylib.SetTargetFPS(60);
 
-            CreateGridSlots();
+            Cells.CreateCells();
 
             Thread physicsThread = new Thread(new ThreadStart(PhysicsLoop));
             physicsThread.Start();
@@ -63,20 +58,6 @@ namespace PowderGame
             while (!Raylib.WindowShouldClose())
             {
                 Physics.RunPhysicsOnAllCells();
-            }
-        }
-
-        static void CreateGridSlots()
-        {
-            for (int i = 0; i < G_GameW / G_CellSize; i++)
-            {
-                for (int j = 0; j < G_GameH / G_CellSize; j++)
-                {
-                    Cell newCell = new Cell(i, j, new Materials.Void());
-
-                    G_Cells.Add(newCell);
-                    G_CellLookup[i, j] = newCell;
-                }
             }
         }
     }

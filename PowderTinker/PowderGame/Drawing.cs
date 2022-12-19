@@ -2,7 +2,9 @@
 using Raylib_cs;
 using System.IO;
 using System.Text;
+
 using static PowderGame.Program;
+using static PowderGame.Cells;
 
 namespace PowderGame
 {
@@ -28,8 +30,8 @@ namespace PowderGame
             string brushDensity = $"Brush density: {MouseInput.BrushDensity:n1}";
             string physicsTime = $"Physics Time (ms): {Physics.AveragePhysicsTimeTaken:n2}";
             string activeCells = $"Active Cells: {Physics.ActiveCells}";
-            string sand = $"Cells (Sand): {G_Cells.Where(c => c.OccupyingMaterial.Name == "Sand").Count()}";
-            string water = $"Cells (Water): {G_Cells.Where(c => c.OccupyingMaterial.Name == "Water").Count()}";
+            string sand = $"Cells (Sand): {CellsEnumerable.Where(c => c.OccupyingMaterial.Name == "Sand").Count()}";
+            string water = $"Cells (Water): {CellsEnumerable.Where(c => c.OccupyingMaterial.Name == "Water").Count()}";
 
             StringBuilder sb = new StringBuilder();
             sb.Append(cellPos + "\n");
@@ -47,7 +49,7 @@ namespace PowderGame
 
         public static void DrawCells()
         {
-            foreach (Cell cell in G_Cells)
+            foreach (Cell cell in CellsEnumerable)
             {
                 cell.Draw();
             }
@@ -61,7 +63,7 @@ namespace PowderGame
         static void DrawGrid()
         {
             // Columns
-            for (int columnPos = GameCorners.Left + G_CellSize; columnPos < GameCorners.Right; columnPos += G_CellSize)
+            for (int columnPos = GameCorners.Left + CellSize; columnPos < GameCorners.Right; columnPos += CellSize)
             {
                 Color col = columnPos % 4 == 0 ? Color.BLUE : Color.DARKBLUE;
 
@@ -69,7 +71,7 @@ namespace PowderGame
             }
 
             // Rows
-            for (int rowPos = GameCorners.Top + G_CellSize; rowPos < GameCorners.Bottom; rowPos += G_CellSize)
+            for (int rowPos = GameCorners.Top + CellSize; rowPos < GameCorners.Bottom; rowPos += CellSize)
             {
                 Color col = rowPos % 4 == 0 ? Color.BLUE : Color.DARKBLUE;
 
@@ -79,7 +81,7 @@ namespace PowderGame
 
         static void DrawCellDebug()
         {
-            IEnumerable<Cell> cells = G_Cells.Where(c => c.OccupyingMaterial.MaterialType != MaterialTypes.None && c.OccupyingMaterial.DrawDebugInfo);
+            IEnumerable<Cell> cells = CellsEnumerable.Where(c => c.OccupyingMaterial.MaterialType != MaterialTypes.None && c.OccupyingMaterial.DrawDebugInfo);
 
             foreach (Cell cell in cells)
             {
@@ -91,17 +93,17 @@ namespace PowderGame
                     {
                         Position pos = m.LastProjectedPath[i];
 
-                        Cell? c = Helpers.GetCellAtIndex(pos.X, pos.Y);
+                        Cell? c = Cells.FindByIndex(pos.X, pos.Y);
                         if (c == null) continue;
 
                         Color col = i == 0 ? col = Color.BLUE : Color.RED;
                         if (i == m.LastProjectedPath.Length - 1) col = Color.GREEN;
 
-                        Raylib.DrawRectangle(c.GridPos.X * G_CellSize, c.GridPos.Y * G_CellSize, G_CellSize, G_CellSize, col);
+                        Raylib.DrawRectangle(c.GridPos.X * CellSize, c.GridPos.Y * CellSize, CellSize, CellSize, col);
                     }
                 }
 
-                Raylib.DrawText($"{(int)m.Velocity.X}x{(int)m.Velocity.Y}", cell.ScreenPos.X, cell.ScreenPos.Y - G_CellSize, 16, Color.PINK);
+                Raylib.DrawText($"{(int)m.Velocity.X}x{(int)m.Velocity.Y}", cell.ScreenPos.X, cell.ScreenPos.Y - CellSize, 16, Color.PINK);
             }
         }
     }

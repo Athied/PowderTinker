@@ -21,7 +21,7 @@ namespace PowderGame.Materials
         Force Drag { get; set; }
 
         Vector2 PhysicsTimer { get; }
-        void RunPhysics(Cell cell);
+        void RunPhysics(Cells.Cell cell);
         bool KillNextFrame { get; }
 
         bool DrawDebugInfo { get; set; }
