@@ -54,12 +54,9 @@ namespace PowderGame
         {
             int index = (x + y * GameW) * 4;
 
-            CellsPixelBuffer[index] = r;
-
+            CellsPixelBuffer[index + 0] = r;
             CellsPixelBuffer[index + 1] = g;
-
             CellsPixelBuffer[index + 2] = b;
-
             CellsPixelBuffer[index + 3] = a;
         }
 
@@ -95,10 +92,10 @@ namespace PowderGame
 
         public static void DrawHUD()
         {
-            //Cell? hoveredCell = MouseInput.GetHoveredCell();
+            Cell? hoveredCell = MouseInput.GetHoveredCell();
 
-            //string cell = hoveredCell != null ? $"Cell: {hoveredCell.OccupyingMaterial.Name} ({hoveredCell.Index.X}x{hoveredCell.Index.Y})" : "Cell: unknown";
-            //string chunk = hoveredCell != null ? $"{hoveredCell.Chunk.ChunkIndex.X}x{hoveredCell.Chunk.ChunkIndex.Y}" : "no chunk";
+            string cell = hoveredCell != null ? $"Cell: {hoveredCell.OccupyingMaterial.Name} ({hoveredCell.Index.X}x{hoveredCell.Index.Y})" : "Cell: unknown";
+            string chunk = hoveredCell != null ? $"{hoveredCell.Chunk.ChunkIndex.X}x{hoveredCell.Chunk.ChunkIndex.Y}" : "no chunk";
             string selectedMat = $"Using: {MouseInput.SelectedMaterialName}";
             string brushSize = $"Brush size: {MouseInput.BrushSize}";
             string brushDensity = $"Brush density: {MouseInput.BrushDensity:n1}";
@@ -109,7 +106,7 @@ namespace PowderGame
             //string water = $"Cells (Water): {CellsEnumerable.Where(c => c.OccupyingMaterial.Name == "Water").Count()}";
 
             StringBuilder sb = new StringBuilder();
-            //sb.Append(cell + $" ({chunk})" + "\n");
+            sb.Append(cell + $" ({chunk})" + "\n");
             sb.Append(selectedMat + "\n");
             sb.Append(brushSize + "\n");
             sb.Append(brushDensity + "\n");

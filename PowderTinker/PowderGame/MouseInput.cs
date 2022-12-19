@@ -21,7 +21,7 @@ namespace PowderGame
             int mx = Raylib.GetMouseX();
             int my = Raylib.GetMouseY();
 
-            return CellsEnumerable.FirstOrDefault(c => mx / CellSize == c.GridPos.X && my / CellSize == c.GridPos.Y);
+            return Cells.FindByIndex(mx / CellSize, my / CellSize);
         }
 
         private static Materials.IMaterial GetMaterial()
