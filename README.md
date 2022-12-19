@@ -10,7 +10,7 @@ TODO:
   - Change cells' local understanding of direction based on the direction of gravity
   - Do extra pass over physics rules, adding more in-depth features such as density (done) and buoyancy
   - Add explosions
-  - Add fire as a 5th material type (?)
+  - Add fire
   - Add chemical reactions if I end up having enough materials to justify it
 
 - Materials
