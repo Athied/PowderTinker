@@ -20,6 +20,8 @@ namespace PowderGame
         public static float AveragePhysicsTimeTaken { get; private set; }
         public static int ActiveCells { get; private set; }
 
+        public static readonly float PhysicsSpeedMult = 1f;
+
         public static void RunPhysicsOnAllCells()
         {
             DateTime t = DateTime.Now;

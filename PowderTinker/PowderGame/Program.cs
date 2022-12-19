@@ -1,7 +1,5 @@
 ﻿using Raylib_cs;
 
-using static PowderGame.Cells;
-
 namespace PowderGame
 {
     static class Program
@@ -9,20 +7,17 @@ namespace PowderGame
         static readonly int WinW = 1280;
         static readonly int WinH = 720;
 
-        public static readonly int G_GameW = 1280;
-        public static readonly int G_GameH = 720;
-
-        public static readonly float G_PhysicsTimerTarget = .2f;
-        public static readonly float G_PhysicsRate = 1f;
+        public static readonly int GameW = 1280;
+        public static readonly int GameH = 720;
 
         public static Corners GameCorners
         {
             get
             {
-                int top = (WinH / 2) - (G_GameH / 2);
-                int left = (WinW / 2) - (G_GameW / 2);
+                int top = (WinH / 2) - (GameH / 2);
+                int left = (WinW / 2) - (GameW / 2);
 
-                return new Corners(top, left, top + G_GameH, left + G_GameW);
+                return new Corners(top, left, top + GameH, left + GameW);
             }
         }
 

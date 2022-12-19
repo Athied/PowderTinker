@@ -57,7 +57,7 @@ namespace PowderGame
 
         static void DrawBorder()
         {
-            Raylib.DrawRectangleLines(GameCorners.Left, GameCorners.Top, G_GameW, G_GameH, Color.RED);
+            Raylib.DrawRectangleLines(GameCorners.Left, GameCorners.Top, GameW, GameH, Color.RED);
         }
 
         static void DrawGrid()

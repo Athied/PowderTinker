@@ -41,11 +41,8 @@ namespace PowderGame.Materials
 
             UpdateVelocity(cell);
 
-            float xTime = Raylib.GetFrameTime() * G_PhysicsRate;
-            float yTime = Raylib.GetFrameTime() * G_PhysicsRate;
-
-            Vector2 addedTime = new Vector2(xTime, yTime);
-
+            float timeIncrement = Raylib.GetFrameTime() * Physics.PhysicsSpeedMult;
+            Vector2 addedTime = new Vector2(timeIncrement, timeIncrement);
             PhysicsTimer += addedTime;
 
             if (PhysicsTimer.X > Raylib.GetFPS() / Math.Abs(Velocity.X))

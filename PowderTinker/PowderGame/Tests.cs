@@ -13,9 +13,9 @@ namespace PowderGame
     {
         public static void DrawCheckerboard()
         {
-            for (int i = 0; i < Program.G_GameW; i++)
+            for (int i = 0; i < Program.GameW; i++)
             {
-                for (int j = 0; j < Program.G_GameH; j++)
+                for (int j = 0; j < Program.GameH; j++)
                 {
                     Color col = (i + j) % 2 == 0 ? Color.GRAY : Color.LIGHTGRAY;
 

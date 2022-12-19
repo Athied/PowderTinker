@@ -10,16 +10,16 @@ namespace PowderGame
         public static readonly int CellSize = 5;
 
         private static readonly List<Cell> cells = new List<Cell>();
-        private static readonly Cell[,] CellsLookup = new Cell[G_GameW / CellSize, G_GameH / CellSize];
+        private static readonly Cell[,] CellsLookup = new Cell[GameW / CellSize, GameH / CellSize];
         public static readonly ReadOnlyCollection<Cell> CellsEnumerable = new ReadOnlyCollection<Cell>(cells);
 
         public static void CreateCells()
         {
             Chunking.Chunk chunk = new Chunking.Chunk(new Position(0, 0));
 
-            for (int i = 0; i < G_GameW / CellSize; i++)
+            for (int i = 0; i < GameW / CellSize; i++)
             {
-                for (int j = 0; j < G_GameH / CellSize; j++)
+                for (int j = 0; j < GameH / CellSize; j++)
                 {
                     if ((i + j) % Chunking.ChunkSize == 0)
                     {
