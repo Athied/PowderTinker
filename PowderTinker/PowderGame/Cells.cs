@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 
 using static PowderGame.Program;
 using static PowderGame.Chunking;
-using static PowderGame.Cells;
 
 namespace PowderGame
 {
