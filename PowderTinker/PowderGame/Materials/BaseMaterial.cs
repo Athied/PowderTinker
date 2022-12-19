@@ -12,7 +12,9 @@ namespace PowderGame.Materials
         public Vector2 PhysicsTimer { get; private set; }
 
         public bool DrawDebugInfo { get; set; }
-        public Position[] LastProjectedPath { get; set; }
+
+        [Obsolete("Only set by deprecated methods")]
+        public Position[]? LastProjectedPath { get; set; }
 
         public virtual float DragResistance { get; }
         public virtual float Density { get; }

@@ -25,6 +25,8 @@ namespace PowderGame.Materials
         bool KillNextFrame { get; }
 
         bool DrawDebugInfo { get; set; }
-        Position[] LastProjectedPath { get; set; }
+
+        [Obsolete("Only set by deprecated methods")]
+        Position[]? LastProjectedPath { get; set; }
     }
 }

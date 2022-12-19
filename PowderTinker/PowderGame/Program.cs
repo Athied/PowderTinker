@@ -37,9 +37,7 @@ namespace PowderGame
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.BLACK);
 
-                Drawing.DrawCells();
-                Drawing.DrawDebugContent();
-                Drawing.DrawHUD();
+                Drawing.DrawFrame();
 
                 MouseInput.CheckMouseInput();
 

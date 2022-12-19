@@ -12,12 +12,33 @@ namespace PowderGame
     {
         private static readonly int FontSize = 18;
 
-        private static readonly Color ChunkColor = new Color(0, 128, 128, 128);
+        private static readonly Color InfoColor = Color.WHITE;
+        private static readonly Color BorderColor = Color.RED;
+        private static readonly Color GridMainColor = Color.BLUE;
+        private static readonly Color GridOffColor = Color.DARKBLUE;
+        private static readonly Color SleepingChunksColor = new Color(0, 128, 128, 32);
+        private static readonly Color AwakeChunksColor = new Color(0, 128, 128, 128);
+        private static readonly Color CellVelocityColor = Color.PINK;
+
+        public static void DrawFrame()
+        {
+            DrawCells();
+            DrawDebugContent();
+            DrawHUD();
+        }
+
+        public static void DrawCells()
+        {
+            foreach (Cell cell in CellsEnumerable)
+            {
+                cell.Draw();
+            }
+        }
 
         public static void DrawDebugContent()
         {
             //DrawGrid();
-            DrawBorder();
+            //DrawBorder();
 
             DrawChunksDebug();
             DrawCellDebug();
@@ -48,48 +69,36 @@ namespace PowderGame
             sb.Append(water + "\n");
 
             Raylib.DrawFPS(20, 20);
-            Raylib.DrawText(sb.ToString(), 20, 60, FontSize, Color.WHITE);
-        }
-
-        public static void DrawCells()
-        {
-            foreach (Cell cell in CellsEnumerable)
-            {
-                cell.Draw();
-            }
+            Raylib.DrawText(sb.ToString(), 20, 60, FontSize, InfoColor);
         }
 
         static void DrawBorder()
         {
-            Raylib.DrawRectangleLines(GameCorners.Left, GameCorners.Top, GameW, GameH, Color.RED);
+            Raylib.DrawRectangleLines(GameCorners.Left, GameCorners.Top, GameW, GameH, BorderColor);
         }
 
         static void DrawGrid()
         {
-            // Columns
             for (int columnPos = GameCorners.Left + CellSize; columnPos < GameCorners.Right; columnPos += CellSize)
             {
-                Color col = columnPos % 4 == 0 ? Color.BLUE : Color.DARKBLUE;
-
+                Color col = columnPos % 4 == 0 ? GridMainColor : GridOffColor;
                 Raylib.DrawLine(columnPos, GameCorners.Top, columnPos, GameCorners.Bottom, col);
             }
 
-            // Rows
             for (int rowPos = GameCorners.Top + CellSize; rowPos < GameCorners.Bottom; rowPos += CellSize)
             {
-                Color col = rowPos % 4 == 0 ? Color.BLUE : Color.DARKBLUE;
-
+                Color col = rowPos % 4 == 0 ? GridMainColor : GridOffColor;
                 Raylib.DrawLine(GameCorners.Left, rowPos, GameCorners.Right, rowPos, col);
             }
         }
 
         static void DrawChunksDebug()
         {
-            IEnumerable<Chunking.Chunk> awakeChunks = Chunking.Chunks.Where(x => !x.Sleeping);
-
-            foreach (Chunking.Chunk chunk in awakeChunks)
+            foreach (Chunking.Chunk chunk in Chunking.Chunks)
             {
-                Raylib.DrawRectangleLines(chunk.ScreenPos.X, chunk.ScreenPos.Y, CellSize * Chunking.ChunkSize, CellSize * Chunking.ChunkSize, ChunkColor);
+                Color col = chunk.Sleeping ? SleepingChunksColor : AwakeChunksColor;
+
+                Raylib.DrawRectangleLines(chunk.ScreenPos.X, chunk.ScreenPos.Y, CellSize * Chunking.ChunkSize, CellSize * Chunking.ChunkSize, col);
             }
         }
 
@@ -100,24 +109,7 @@ namespace PowderGame
             foreach (Cell cell in cells)
             {
                 IMaterial m = cell.OccupyingMaterial;
-
-                if (m.LastProjectedPath != null)
-                {
-                    for (int i = 0; i < m.LastProjectedPath.Length; i++)
-                    {
-                        Position pos = m.LastProjectedPath[i];
-
-                        Cell? c = Cells.FindByIndex(pos.X, pos.Y);
-                        if (c == null) continue;
-
-                        Color col = i == 0 ? col = Color.BLUE : Color.RED;
-                        if (i == m.LastProjectedPath.Length - 1) col = Color.GREEN;
-
-                        Raylib.DrawRectangle(c.GridPos.X * CellSize, c.GridPos.Y * CellSize, CellSize, CellSize, col);
-                    }
-                }
-
-                Raylib.DrawText($"{(int)m.Velocity.X}x{(int)m.Velocity.Y}", cell.ScreenPos.X, cell.ScreenPos.Y - CellSize, 16, Color.PINK);
+                Raylib.DrawText($"{(int)m.Velocity.X}x{(int)m.Velocity.Y}", cell.ScreenPos.X, cell.ScreenPos.Y - CellSize, 16, CellVelocityColor);
             }
         }
     }
