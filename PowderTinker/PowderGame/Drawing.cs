@@ -12,11 +12,14 @@ namespace PowderGame
     {
         private static readonly int FontSize = 18;
 
+        private static readonly Color ChunkColor = new Color(0, 128, 128, 128);
+
         public static void DrawDebugContent()
         {
             //DrawGrid();
             DrawBorder();
 
+            DrawChunksDebug();
             DrawCellDebug();
         }
 
@@ -24,7 +27,8 @@ namespace PowderGame
         {
             Cell? hoveredCell = MouseInput.GetHoveredCell();
 
-            string cellPos = hoveredCell != null ? $"Cell: {hoveredCell.OccupyingMaterial.Name} ({hoveredCell.Index.X}x{hoveredCell.Index.Y})" : "Cell: unknown";
+            string cell = hoveredCell != null ? $"Cell: {hoveredCell.OccupyingMaterial.Name} ({hoveredCell.Index.X}x{hoveredCell.Index.Y})" : "Cell: unknown";
+            string chunk = hoveredCell != null ? $"{hoveredCell.Chunk.ChunkIndex.X}x{hoveredCell.Chunk.ChunkIndex.Y}" : "no chunk";
             string selectedMat = $"Using: {MouseInput.SelectedMaterialName}";
             string brushSize = $"Brush size: {MouseInput.BrushSize}";
             string brushDensity = $"Brush density: {MouseInput.BrushDensity:n1}";
@@ -34,7 +38,7 @@ namespace PowderGame
             string water = $"Cells (Water): {CellsEnumerable.Where(c => c.OccupyingMaterial.Name == "Water").Count()}";
 
             StringBuilder sb = new StringBuilder();
-            sb.Append(cellPos + "\n");
+            sb.Append(cell + $" ({chunk})" + "\n");
             sb.Append(selectedMat + "\n");
             sb.Append(brushSize + "\n");
             sb.Append(brushDensity + "\n");
@@ -76,6 +80,16 @@ namespace PowderGame
                 Color col = rowPos % 4 == 0 ? Color.BLUE : Color.DARKBLUE;
 
                 Raylib.DrawLine(GameCorners.Left, rowPos, GameCorners.Right, rowPos, col);
+            }
+        }
+
+        static void DrawChunksDebug()
+        {
+            IEnumerable<Chunking.Chunk> awakeChunks = Chunking.Chunks.Where(x => !x.Sleeping);
+
+            foreach (Chunking.Chunk chunk in awakeChunks)
+            {
+                Raylib.DrawRectangleLines(chunk.ScreenPos.X, chunk.ScreenPos.Y, CellSize * Chunking.ChunkSize, CellSize * Chunking.ChunkSize, ChunkColor);
             }
         }
 

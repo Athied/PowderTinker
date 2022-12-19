@@ -26,6 +26,7 @@ namespace PowderGame
             Raylib.InitWindow(WinW, WinH, "Hello World");
             Raylib.SetTargetFPS(60);
 
+            Chunking.CreateChunks();
             Cells.CreateCells();
 
             Thread physicsThread = new Thread(new ThreadStart(PhysicsLoop));

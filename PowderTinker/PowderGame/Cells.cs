@@ -1,7 +1,8 @@
 ﻿using Raylib_cs;
 using System.Collections.ObjectModel;
-using System.Runtime.InteropServices;
+
 using static PowderGame.Program;
+using static PowderGame.Chunking;
 
 namespace PowderGame
 {
@@ -15,18 +16,11 @@ namespace PowderGame
 
         public static void CreateCells()
         {
-            Chunking.Chunk chunk = new Chunking.Chunk(new Position(0, 0));
-
             for (int i = 0; i < GameW / CellSize; i++)
             {
                 for (int j = 0; j < GameH / CellSize; j++)
                 {
-                    if ((i + j) % Chunking.ChunkSize == 0)
-                    {
-                        chunk = new Chunking.Chunk(new Position(i, j));
-                    }
-
-                    Cell newCell = new Cell(i, j, new Materials.Void(), chunk);
+                    Cell newCell = new Cell(i, j, new Materials.Void());
 
                     cells.Add(newCell);
                     CellsLookup[i, j] = newCell;
@@ -45,27 +39,25 @@ namespace PowderGame
 
         public class Cell
         {
-            public Cell(int x, int y, Materials.IMaterial _material, Chunking.Chunk chunk)
+            public Cell(int x, int y, Materials.IMaterial _material)
             {
                 Index.X = x;
                 Index.Y = y;
 
                 SetMaterial(_material);
-                Chunk = chunk;
             }
 
-            public Cell(Position index, Materials.IMaterial _material, Chunking.Chunk chunk)
+            public Cell(Position index, Materials.IMaterial _material)
             {
                 Index = index;
 
                 SetMaterial(_material);
-                Chunk = chunk;
             }
 
             public readonly Position Index;
             public Position ScreenPos { get { return new Position(GameCorners.Left + Index.X * CellSize, GameCorners.Top + Index.Y * CellSize); } }
             public Position GridPos { get { return new Position(ScreenPos.X / CellSize, ScreenPos.Y / CellSize); } }
-            public readonly Chunking.Chunk Chunk;
+            public Chunk Chunk { get { return ChunksLookup[(int)Math.Floor(Index.X / Convert.ToDecimal(ChunkSize)), (int)Math.Floor(Index.Y / Convert.ToDecimal(ChunkSize))]; } }
 
             private Color color = Color.RED;
             public Color Color { get { return color; } }
