@@ -63,14 +63,6 @@ namespace PowderGame
 
                 if (SelectedMaterial > MaxMaterialIndex) SelectedMaterial = 0;
             }
-
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
-            {
-                Cell? cell = GetHoveredCell();
-                if (cell == null) return;
-
-                cell.OccupyingMaterial.DrawDebugInfo = !cell.OccupyingMaterial.DrawDebugInfo;
-            }
         }
 
         public static void SpawnMaterialsInZone(Cell centralCell)

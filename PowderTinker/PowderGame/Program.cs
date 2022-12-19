@@ -29,6 +29,8 @@ namespace PowderGame
             Chunking.CreateChunks();
             Cells.CreateCells();
 
+            int hello = Chunking.Chunks.Count;
+
             Thread physicsThread = new Thread(new ThreadStart(PhysicsLoop));
             physicsThread.Start();
 
@@ -40,6 +42,7 @@ namespace PowderGame
                 Drawing.DrawFrame();
 
                 MouseInput.CheckMouseInput();
+                KeyInput.CheckKeyInput();
 
                 Raylib.EndDrawing();
             }

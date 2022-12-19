@@ -17,8 +17,12 @@ namespace PowderGame
         private static readonly Color GridMainColor = Color.BLUE;
         private static readonly Color GridOffColor = Color.DARKBLUE;
         private static readonly Color SleepingChunksColor = new Color(0, 128, 128, 32);
-        private static readonly Color AwakeChunksColor = new Color(0, 128, 128, 128);
+        private static readonly Color AwakeChunksColor = new Color(0, 128, 128, 255);
         private static readonly Color CellVelocityColor = Color.PINK;
+
+        public static bool ShowChunks = false;
+        public static bool ShowGrid = false;
+        public static bool ShowBorder = false;
 
         public static void DrawFrame()
         {
@@ -37,11 +41,10 @@ namespace PowderGame
 
         public static void DrawDebugContent()
         {
-            //DrawGrid();
-            //DrawBorder();
-
-            DrawChunksDebug();
+            if (ShowGrid) DrawGrid();
+            if (ShowChunks) DrawChunksDebug();
             DrawCellDebug();
+            if (ShowBorder) DrawBorder();
         }
 
         public static void DrawHUD()

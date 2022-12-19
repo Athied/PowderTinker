@@ -13,6 +13,8 @@ namespace PowderGame
         public float X;
         public float Y;
 
+        public bool IsZero() { return X == 0 && Y == 0; }
+
         public bool Equals(Force other) { return X == other.X && Y == other.Y; }
 
         public Force Product(Vector2 other) { return new Force(X * other.X, Y * other.Y); }

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 
 using static PowderGame.Program;
 using static PowderGame.Chunking;
+using static PowderGame.Cells;
 
 namespace PowderGame
 {
@@ -10,8 +11,8 @@ namespace PowderGame
     {
         public static readonly int CellSize = 5;
 
-        private static readonly List<Cell> cells = new List<Cell>();
         private static readonly Cell[,] CellsLookup = new Cell[GameW / CellSize, GameH / CellSize];
+        private static readonly List<Cell> cells = new List<Cell>();
         public static readonly ReadOnlyCollection<Cell> CellsEnumerable = new ReadOnlyCollection<Cell>(cells);
 
         public static void CreateCells()
@@ -57,7 +58,43 @@ namespace PowderGame
             public readonly Position Index;
             public Position ScreenPos { get { return new Position(GameCorners.Left + Index.X * CellSize, GameCorners.Top + Index.Y * CellSize); } }
             public Position GridPos { get { return new Position(ScreenPos.X / CellSize, ScreenPos.Y / CellSize); } }
-            public Chunk Chunk { get { return ChunksLookup[(int)Math.Floor(Index.X / Convert.ToDecimal(ChunkSize)), (int)Math.Floor(Index.Y / Convert.ToDecimal(ChunkSize))]; } }
+
+            private Chunk? chunk = null;
+            public Chunk Chunk
+            {
+                get
+                {
+                    chunk ??= Chunking.FindByCellIndex(Index);
+                    return chunk;
+                }
+            }
+
+            private List<Chunk>? borderedChunks = null;
+            private ReadOnlyCollection<Chunk>? borderedChunksReadOnly = null;
+            public ReadOnlyCollection<Chunk> BorderedChunks
+            {
+                get
+                {
+                    if (borderedChunks == null)
+                    {
+                        Chunk? down = Chunking.FindByCellIndex(Index.X, Index.Y + 1);
+                        Chunk? up = Chunking.FindByCellIndex(Index.X, Index.Y - 1);
+                        Chunk? right = Chunking.FindByCellIndex(Index.X + 1, Index.Y);
+                        Chunk? left = Chunking.FindByCellIndex(Index.X - 1, Index.Y);
+
+                        borderedChunks = new List<Chunk>();
+
+                        if (down != null) borderedChunks.Add(down);
+                        if (up != null) borderedChunks.Add(up);
+                        if (right != null) borderedChunks.Add(right);
+                        if (left != null) borderedChunks.Add(left);
+                    }
+
+                    borderedChunksReadOnly ??= new ReadOnlyCollection<Chunk>(borderedChunks);
+
+                    return borderedChunksReadOnly;
+                }
+            }
 
             private Color color = Color.RED;
             public Color Color { get { return color; } }
@@ -86,6 +123,13 @@ namespace PowderGame
 
                 OccupyingMaterial = material;
                 SetColor();
+
+                Chunk.SetSleepNextFrame(false);
+
+                foreach (Chunk chunk in BorderedChunks)
+                {
+                    chunk.SetSleepNextFrame(false);
+                }
             }
 
             /// <summary> Takes the material from a cell and sets that cell's material to a given one. </summary>
@@ -117,6 +161,18 @@ namespace PowderGame
             if (foundCell == null) return materialTypes.Contains(MaterialTypes.OutsideMap);
 
             return materialTypes.Contains(foundCell.OccupyingMaterial.MaterialType);
+        }
+
+        public static bool IsSurroundedBySolids(Cell originCell)
+        {
+            MaterialTypes[] m = new MaterialTypes[] { MaterialTypes.Solid, MaterialTypes.Powder, MaterialTypes.OutsideMap };
+
+            if (!QueryMaterial(originCell, 0, 1, m)) return false;
+            if (!QueryMaterial(originCell, 0, -1, m)) return false;
+            if (!QueryMaterial(originCell, 1, 0, m)) return false;
+            if (!QueryMaterial(originCell, -1, 0, m)) return false;
+
+            return true;
         }
     }
 }

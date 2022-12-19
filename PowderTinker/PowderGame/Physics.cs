@@ -2,8 +2,8 @@
 using Raylib_cs;
 using System.Numerics;
 
-using static PowderGame.Program;
 using static PowderGame.Cells;
+using static PowderGame.Chunking;
 
 namespace PowderGame
 {
@@ -22,15 +22,23 @@ namespace PowderGame
 
         public static readonly float PhysicsSpeedMult = 1f;
 
+        private static bool UseChunking = true;
+
         public static void RunPhysicsOnAllCells()
         {
             DateTime t = DateTime.Now;
 
-            IEnumerable<Cell> cells = CellsEnumerable.Where(c => c.OccupyingMaterial.MaterialType != MaterialTypes.None).Reverse();
+            //IEnumerable<Cell> cellsToUpdate = CellsEnumerable.Where(c => (!c.Chunk.Sleeping || !UseChunking) && c.OccupyingMaterial.MaterialType != MaterialTypes.None);
+            var cellsToUpdate = CellsEnumerable.ToList().FindAll(c => (!c.Chunk.Sleeping || !UseChunking) && c.OccupyingMaterial.MaterialType != MaterialTypes.None);
 
-            ActiveCells = cells.Count();
+            ActiveCells = cellsToUpdate.Count();
 
-            Parallel.ForEach(cells, cell =>
+            foreach (Chunk chunk in Chunks)
+            {
+                chunk.UpdateSleepState();
+            }
+
+            Parallel.ForEach(cellsToUpdate, cell =>
             {
                 cell.OccupyingMaterial.RunPhysics(cell);
             });
@@ -90,6 +98,13 @@ namespace PowderGame
             if (QueryMaterial(cell, 1, 0, frictionSurfaces) || QueryMaterial(cell, -1, 0, frictionSurfaces))
             {
                 m.Velocity.Reduce(0, 1);
+            }
+
+            // Rapid velocity loss if suffocated
+            // Important for chunking
+            if (Cells.IsSurroundedBySolids(cell))
+            {
+                m.Velocity.Reduce(50, 50);
             }
         }
     }
