@@ -29,7 +29,11 @@ namespace PowderGame
             DateTime t = DateTime.Now;
 
             //IEnumerable<Cell> cellsToUpdate = CellsEnumerable.Where(c => (!c.Chunk.Sleeping || !UseChunking) && c.OccupyingMaterial.MaterialType != MaterialTypes.None);
-            var cellsToUpdate = CellsEnumerable.ToList().FindAll(c => (!c.Chunk.Sleeping || !UseChunking) && c.OccupyingMaterial.MaterialType != MaterialTypes.None);
+            //var cellsToUpdate = CellsEnumerable.ToList().FindAll(c => (!c.Chunk.Sleeping || !UseChunking) && c.OccupyingMaterial.MaterialType != MaterialTypes.None);
+            
+            // method a
+
+            var cellsToUpdate = Chunks.ToList().FindAll(x => !x.Sleeping || !UseChunking).SelectMany(y => y.GetContainedCells());
 
             ActiveCells = cellsToUpdate.Count();
 
@@ -40,8 +44,33 @@ namespace PowderGame
 
             Parallel.ForEach(cellsToUpdate, cell =>
             {
+                if (cell.OccupyingMaterial.MaterialType == MaterialTypes.None) return;
                 cell.OccupyingMaterial.RunPhysics(cell);
             });
+
+            // method b
+
+            //int ac = 0;
+            ////Parallel.ForEach(Chunks, chunk =>
+            //foreach (var chunk in Chunks.Reverse())
+            //{
+            //    chunk.UpdateSleepState();
+
+            //    if (!chunk.Sleeping || !UseChunking)
+            //    {
+            //        //var cells = chunk.GetContainedCells().Where(c => c.OccupyingMaterial.MaterialType != MaterialTypes.None);
+
+            //        foreach (var cell in chunk.GetContainedCells().Reverse())
+            //        {
+            //            if (cell.OccupyingMaterial.MaterialType == MaterialTypes.None) continue;
+            //            cell.OccupyingMaterial.RunPhysics(cell);
+
+            //            ac++;
+            //        };
+            //    }
+            //};
+
+            //ActiveCells = ac;
 
             if (AvgMilliseconds.Count > 180) AvgMilliseconds.RemoveAt(0);
 

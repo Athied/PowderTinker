@@ -8,7 +8,7 @@ namespace PowderGame
 {
     public static class Cells
     {
-        public static readonly int CellSize = 5;
+        public static readonly int CellSize = 3;
 
         private static readonly Cell[,] CellsLookup = new Cell[GameW / CellSize, GameH / CellSize];
         private static readonly List<Cell> cells = new List<Cell>();
