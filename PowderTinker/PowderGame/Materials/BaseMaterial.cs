@@ -43,13 +43,13 @@ namespace PowderGame.Materials
 
             UpdateVelocity(cell);
 
-            float timeIncrement = Raylib.GetFrameTime() * Physics.PhysicsSpeedMult;
+            float timeIncrement = DeltaTime * Physics.PhysicsSpeedMult;
             Vector2 addedTime = new Vector2(timeIncrement, timeIncrement);
             PhysicsTimer += addedTime;
 
-            bool wakeUpChunkAndBorderingChunks = !cell.OccupyingMaterial.Velocity.IsZero();
+            bool wakeUpChunkAndBorderingChunks = !Velocity.IsZero();
 
-            if (PhysicsTimer.X > Raylib.GetFPS() / Math.Abs(Velocity.X))
+            if (PhysicsTimer.X > FPS / Math.Abs(Velocity.X))
             {
                 PhysicsTimer = new Vector2(0, PhysicsTimer.Y);
 
@@ -61,7 +61,7 @@ namespace PowderGame.Materials
                 }
             }
 
-            if (PhysicsTimer.Y > Raylib.GetFPS() / Math.Abs(Velocity.Y))
+            if (PhysicsTimer.Y > FPS / Math.Abs(Velocity.Y))
             {
                 PhysicsTimer = new Vector2(PhysicsTimer.X, 0);
 

@@ -1,10 +1,13 @@
 ﻿using PowderGame.Materials;
 using Raylib_cs;
-using System.IO;
 using System.Text;
 
 using static PowderGame.Program;
 using static PowderGame.Cells;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Data;
+using System.Security.Principal;
 
 namespace PowderGame
 {
@@ -24,18 +27,61 @@ namespace PowderGame
         public static bool ShowGrid = false;
         public static bool ShowBorder = false;
 
+        private static readonly List<float> AvgMilliseconds = new List<float>();
+        public static float AverageDrawingTimeTaken { get; private set; }
+
+        private static byte[] CellsPixelBuffer = new byte[WinW * WinH * 4];
+        public static Texture2D CellsTexture = new Texture2D() { format = PixelFormat.PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, width = WinW, height = WinH };
+
+        public static readonly bool UseTextureRendering = true;
+
         public static void DrawFrame()
         {
+            DateTime t = DateTime.Now;
+
             DrawCells();
             DrawDebugContent();
             DrawHUD();
+
+            if (AvgMilliseconds.Count > 180) AvgMilliseconds.RemoveAt(0);
+            AvgMilliseconds.Add((float)(DateTime.Now - t).TotalMilliseconds);
+            AverageDrawingTimeTaken = (float)AvgMilliseconds.Average();
+
+            //Raylib.TraceLog(TraceLogLevel.LOG_INFO, AverageDrawingTimeTaken.ToString());
+        }
+
+        public static void SetPixelColor(int x, int y, byte r, byte g, byte b, byte a)
+        {
+            int index = (x + y * GameW) * 4;
+
+            CellsPixelBuffer[index] = r;
+
+            CellsPixelBuffer[index + 1] = g;
+
+            CellsPixelBuffer[index + 2] = b;
+
+            CellsPixelBuffer[index + 3] = a;
         }
 
         public static void DrawCells()
         {
-            foreach (Cell cell in CellsEnumerable)
+            if (UseTextureRendering)
             {
-                cell.Draw();
+                unsafe
+                {
+                    GCHandle pinned = GCHandle.Alloc(CellsPixelBuffer, GCHandleType.Pinned);
+                    Raylib.UpdateTexture(CellsTexture, pinned.AddrOfPinnedObject().ToPointer());
+                    pinned.Free();
+                }
+
+                Raylib.DrawTexture(CellsTexture, 0, 0, Color.WHITE);
+            }
+            else
+            {
+                foreach (Cell cell in CellsEnumerable)
+                {
+                    cell.DrawAsRect();
+                }
             }
         }
 
@@ -43,33 +89,35 @@ namespace PowderGame
         {
             if (ShowGrid) DrawGrid();
             if (ShowChunks) DrawChunksDebug();
-            DrawCellDebug();
+            //DrawCellDebug();
             if (ShowBorder) DrawBorder();
         }
 
         public static void DrawHUD()
         {
-            Cell? hoveredCell = MouseInput.GetHoveredCell();
+            //Cell? hoveredCell = MouseInput.GetHoveredCell();
 
-            string cell = hoveredCell != null ? $"Cell: {hoveredCell.OccupyingMaterial.Name} ({hoveredCell.Index.X}x{hoveredCell.Index.Y})" : "Cell: unknown";
-            string chunk = hoveredCell != null ? $"{hoveredCell.Chunk.ChunkIndex.X}x{hoveredCell.Chunk.ChunkIndex.Y}" : "no chunk";
+            //string cell = hoveredCell != null ? $"Cell: {hoveredCell.OccupyingMaterial.Name} ({hoveredCell.Index.X}x{hoveredCell.Index.Y})" : "Cell: unknown";
+            //string chunk = hoveredCell != null ? $"{hoveredCell.Chunk.ChunkIndex.X}x{hoveredCell.Chunk.ChunkIndex.Y}" : "no chunk";
             string selectedMat = $"Using: {MouseInput.SelectedMaterialName}";
             string brushSize = $"Brush size: {MouseInput.BrushSize}";
             string brushDensity = $"Brush density: {MouseInput.BrushDensity:n1}";
             string physicsTime = $"Physics Time (ms): {Physics.AveragePhysicsTimeTaken:n2}";
+            string drawTime = $"Draw Time (ms): {AverageDrawingTimeTaken:n2}";
             string activeCells = $"Active Cells: {Physics.ActiveCells}";
-            string sand = $"Cells (Sand): {CellsEnumerable.Where(c => c.OccupyingMaterial.Name == "Sand").Count()}";
-            string water = $"Cells (Water): {CellsEnumerable.Where(c => c.OccupyingMaterial.Name == "Water").Count()}";
+            //string sand = $"Cells (Sand): {CellsEnumerable.Where(c => c.OccupyingMaterial.Name == "Sand").Count()}";
+            //string water = $"Cells (Water): {CellsEnumerable.Where(c => c.OccupyingMaterial.Name == "Water").Count()}";
 
             StringBuilder sb = new StringBuilder();
-            sb.Append(cell + $" ({chunk})" + "\n");
+            //sb.Append(cell + $" ({chunk})" + "\n");
             sb.Append(selectedMat + "\n");
             sb.Append(brushSize + "\n");
             sb.Append(brushDensity + "\n");
             sb.Append(physicsTime + "\n");
+            sb.Append(drawTime + "\n");
             sb.Append(activeCells + "\n\n");
-            sb.Append(sand + "\n");
-            sb.Append(water + "\n");
+            //sb.Append(sand + "\n");
+            //sb.Append(water + "\n");
 
             Raylib.DrawFPS(20, 20);
             Raylib.DrawText(sb.ToString(), 20, 60, FontSize, InfoColor);

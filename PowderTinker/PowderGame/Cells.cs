@@ -103,15 +103,23 @@ namespace PowderGame
 
             private void SetColor()
             {
-                int r = (int)Helpers.RandomRange(OccupyingMaterial.Colors.Min.r, OccupyingMaterial.Colors.Max.r);
-                int g = (int)Helpers.RandomRange(OccupyingMaterial.Colors.Min.g, OccupyingMaterial.Colors.Max.g);
-                int b = (int)Helpers.RandomRange(OccupyingMaterial.Colors.Min.b, OccupyingMaterial.Colors.Max.b);
-                int a = (int)Helpers.RandomRange(OccupyingMaterial.Colors.Min.a, OccupyingMaterial.Colors.Max.a);
+                byte r = (byte)Helpers.RandomRange(OccupyingMaterial.Colors.Min.r, OccupyingMaterial.Colors.Max.r);
+                byte g = (byte)Helpers.RandomRange(OccupyingMaterial.Colors.Min.g, OccupyingMaterial.Colors.Max.g);
+                byte b = (byte)Helpers.RandomRange(OccupyingMaterial.Colors.Min.b, OccupyingMaterial.Colors.Max.b);
+                byte a = (byte)Helpers.RandomRange(OccupyingMaterial.Colors.Min.a, OccupyingMaterial.Colors.Max.a);
 
                 color = new Color(r, g, b, a);
+
+                for (int i = 0; i < CellSize; i++)
+                {
+                    for (int j = 0; j < CellSize; j++)
+                    {
+                        Drawing.SetPixelColor(ScreenPos.X + i, ScreenPos.Y + j, r, g, b, a);
+                    }
+                }
             }
 
-            public void Draw()
+            public void DrawAsRect()
             {
                 if (OccupyingMaterial.MaterialType == MaterialTypes.None) return;
                 Raylib.DrawRectangle(GridPos.X * CellSize, GridPos.Y * CellSize, CellSize, CellSize, color);
