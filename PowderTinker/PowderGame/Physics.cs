@@ -1,7 +1,7 @@
 ﻿using PowderGame.Materials;
 using Raylib_cs;
 using System.Numerics;
-
+using System.Runtime.CompilerServices;
 using static PowderGame.Cells;
 using static PowderGame.Chunking;
 
@@ -28,49 +28,45 @@ namespace PowderGame
         {
             DateTime t = DateTime.Now;
 
-            //IEnumerable<Cell> cellsToUpdate = CellsEnumerable.Where(c => (!c.Chunk.Sleeping || !UseChunking) && c.OccupyingMaterial.MaterialType != MaterialTypes.None);
-            //var cellsToUpdate = CellsEnumerable.ToList().FindAll(c => (!c.Chunk.Sleeping || !UseChunking) && c.OccupyingMaterial.MaterialType != MaterialTypes.None);
-            
-            // method a
-
-            var cellsToUpdate = Chunks.ToList().FindAll(x => !x.Sleeping || !UseChunking).SelectMany(y => y.GetContainedCells());
-
-            ActiveCells = cellsToUpdate.Count();
-
             foreach (Chunk chunk in Chunks)
             {
                 chunk.UpdateSleepState();
             }
 
-            Parallel.ForEach(cellsToUpdate, cell =>
-            {
-                if (cell.OccupyingMaterial.MaterialType == MaterialTypes.None) return;
-                cell.OccupyingMaterial.RunPhysics(cell);
-            });
+            ActiveCells = 0;
 
-            // method b
-
-            //int ac = 0;
-            ////Parallel.ForEach(Chunks, chunk =>
-            //foreach (var chunk in Chunks.Reverse())
-            //{
-            //    chunk.UpdateSleepState();
-
-            //    if (!chunk.Sleeping || !UseChunking)
+            //CellsEnumerable.AsParallel()
+            //    .WithDegreeOfParallelism(50)
+            //    .Where(c => (!c.Chunk.Sleeping || !UseChunking) && c.OccupyingMaterial.MaterialType != MaterialTypes.None)
+            //    .ForAll(cell =>
             //    {
-            //        //var cells = chunk.GetContainedCells().Where(c => c.OccupyingMaterial.MaterialType != MaterialTypes.None);
+            //        if (cell.OccupyingMaterial.MaterialType == MaterialTypes.None) return;
+            //        cell.OccupyingMaterial.RunPhysics(cell);
 
-            //        foreach (var cell in chunk.GetContainedCells().Reverse())
-            //        {
-            //            if (cell.OccupyingMaterial.MaterialType == MaterialTypes.None) continue;
-            //            cell.OccupyingMaterial.RunPhysics(cell);
+            //        ActiveCells++;
+            //    });
 
-            //            ac++;
-            //        };
-            //    }
-            //};
+            Chunks.AsParallel()
+                .WithDegreeOfParallelism(50)
+                .Where(x => !x.Sleeping || !UseChunking)
+                .SelectMany(y => y.ContainedCells)
+                .ForAll(cell =>
+                {
+                    if (cell.OccupyingMaterial.MaterialType == MaterialTypes.None) return;
+                    cell.OccupyingMaterial.RunPhysics(cell);
 
-            //ActiveCells = ac;
+                    ActiveCells++;
+                });
+
+            //var cellsToUpdate = CellsEnumerable.ToList().FindAll(c => (!c.Chunk.Sleeping || !UseChunking) && c.OccupyingMaterial.MaterialType != MaterialTypes.None);
+
+            //ActiveCells = cellsToUpdate.Count();
+
+            //Parallel.ForEach(cellsToUpdate, cell =>
+            //{
+            //    if (cell.OccupyingMaterial.MaterialType == MaterialTypes.None) return;
+            //    cell.OccupyingMaterial.RunPhysics(cell);
+            //});
 
             if (AvgMilliseconds.Count > 180) AvgMilliseconds.RemoveAt(0);
 

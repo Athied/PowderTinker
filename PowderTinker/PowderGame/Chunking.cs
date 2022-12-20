@@ -80,27 +80,30 @@ namespace PowderGame
             }
 
             private Cell[]? containedCells = null;
-            public Cell[] GetContainedCells()
+            public Cell[] ContainedCells
             {
-                if (containedCells == null)
+                get
                 {
-                    List<Cell> cells = new List<Cell>();
-
-                    for (int i = 0; i < ChunkSize; i++)
+                    if (containedCells == null)
                     {
-                        for (int j = 0; j < ChunkSize; j++)
-                        {
-                            Cell? cell = Cells.FindByIndex(TopLeftCellIndex.X + i, TopLeftCellIndex.Y + j);
-                            if (cell == null) continue;
+                        List<Cell> cells = new List<Cell>();
 
-                            cells.Add(cell);
+                        for (int i = 0; i < ChunkSize; i++)
+                        {
+                            for (int j = 0; j < ChunkSize; j++)
+                            {
+                                Cell? cell = Cells.FindByIndex(TopLeftCellIndex.X + i, TopLeftCellIndex.Y + j);
+                                if (cell == null) continue;
+
+                                cells.Add(cell);
+                            }
                         }
+
+                        containedCells = cells.ToArray();
                     }
 
-                    containedCells = cells.ToArray();
+                    return containedCells;
                 }
-
-                return containedCells;
             }
         }
     }

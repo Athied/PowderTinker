@@ -99,10 +99,11 @@ namespace PowderGame
             string selectedMat = $"Using: {MouseInput.SelectedMaterialName}";
             string brushSize = $"Brush size: {MouseInput.BrushSize}";
             string brushDensity = $"Brush density: {MouseInput.BrushDensity:n1}";
-            string physicsTime = $"Physics Time (ms): {Physics.AveragePhysicsTimeTaken:n2}";
-            string drawTime = $"Draw Time (ms): {AverageDrawingTimeTaken:n2}";
+            string physicsTime = $"Physics Time (ms): {Physics.AveragePhysicsTimeTaken:n3}";
+            string drawTime = $"Draw Time (ms): {AverageDrawingTimeTaken:n3}";
             string activeCells = $"Active Cells: {Physics.ActiveCells}";
             string totalCells = $"Total Cells: {CellsEnumerable.Count}";
+            string threads = $"Threads: {System.Diagnostics.Process.GetCurrentProcess().Threads.Count}";
             //string sand = $"Cells (Sand): {CellsEnumerable.Where(c => c.OccupyingMaterial.Name == "Sand").Count()}";
             //string water = $"Cells (Water): {CellsEnumerable.Where(c => c.OccupyingMaterial.Name == "Water").Count()}";
 
@@ -113,6 +114,7 @@ namespace PowderGame
             sb.Append(brushDensity + "\n");
             sb.Append(physicsTime + "\n");
             sb.Append(drawTime + "\n");
+            sb.Append(threads + "\n");
             sb.Append(activeCells + "\n");
             sb.Append(totalCells + "\n\n");
             //sb.Append(sand + "\n");
