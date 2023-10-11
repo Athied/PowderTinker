@@ -1,4 +1,4 @@
-A cellular automata recreation of Powder Toy using C# and Raylib.
+A powder toy using C# and Raylib.
 
 ![](Media/sand.gif)
 
