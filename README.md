@@ -20,8 +20,8 @@ TODO:
   - Powders: Sand (done), Salt, Dirt, Explosive
 
 - Optimisation
-  - Add cell chunking
-  - Make chunks sleep when calculations are not necessary
+  - Add cell chunking (done)
+  - Make chunks sleep when calculations are not necessary (done sorta)
 
 - Extra
   - Add procedural terrain generation using noise to create starting environments
